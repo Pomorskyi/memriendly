@@ -4,7 +4,6 @@ import { Header } from '../Components/componentsForPages'
 const FeedPage = () => {
   return (
     <Header></Header>
-    // <div>Feed</div>
   )
 }
 

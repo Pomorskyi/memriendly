@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <div>
         <div>logo</div>
-        <div>buttons</div>
+        <div></div>
         <div>panel</div>
     </div>
   )
