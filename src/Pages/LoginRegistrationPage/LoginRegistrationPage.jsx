@@ -18,7 +18,7 @@ const LoginReginstrationPage = ({ model }) => {
       <Row className='h-100'>
         <Col sm={1} md={1} lg={3} xl={3} xxl={4}></Col>
         <Col sm={10} md={10} lg={6} xl={6} xxl={4} className='hor-center ver-center'>
-          <div className='LoginReginstrationPageContainer hor-center ver-center'>
+          <div className='LoginRegistrationPageContainer hor-center ver-center'>
             <RegistrationForm model={model}/>
           </div>
         </Col>

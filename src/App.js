@@ -5,6 +5,7 @@ import {
   Route,
 } from "react-router-dom";
 import { FeedPage, LoginReginstrationPage } from "./Pages"
+import { SignUp } from "./Components/componentsForComponents";
 
 //======================FIREBASE======================
 import { initializeApp } from "firebase/app";
@@ -15,27 +16,28 @@ console.log(app);
 //======================FIREBASE======================
 
 function App() {
-  const [ isUserAuthenticated, setIsUserAuthenticated ] = useState(false);
+  // const [ isUserAuthenticated, setIsUserAuthenticated ] = useState(false);
   
-  const model = {};
-  useMemo(()=> {
-    model.isUserAuthenticated = isUserAuthenticated;
-    model.firebaseApp = app;
-  }, [isUserAuthenticated, app]);
+  // const model = {};
+  // useMemo(()=> {
+  //   model.isUserAuthenticated = isUserAuthenticated;
+  //   model.firebaseApp = app;
+  // }, [isUserAuthenticated, app]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LoginReginstrationPage model={model} />}>
-          <Route path="home" element={<FeedPage />} model={model} />
-          {/* <Route path="teams" element={<Teams />}> */}
-            {/* <Route path=":teamId" element={<Team />} />
-            <Route path="home" element={<FeedPage model={model} />} />
-            <Route index element={<LeagueStandings />} /> */}
-          {/* </Route> */}
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <SignUp />
+    // <BrowserRouter>
+    //   <Routes>
+    //     <Route path="/" element={<LoginReginstrationPage model={model} />}>
+    //       <Route path="home" element={<FeedPage />} model={model} />
+    //       {/* <Route path="teams" element={<Teams />}> */}
+    //         {/* <Route path=":teamId" element={<Team />} />
+    //         <Route path="home" element={<FeedPage model={model} />} />
+    //         <Route index element={<LeagueStandings />} /> */}
+    //       {/* </Route> */}
+    //     </Route>
+    //   </Routes>
+    // </BrowserRouter>
     // <BrowserRouter>
     //   <Routes>
     //     <Route path="/" element={<LoginReginstrationPage model={{}}></LoginReginstrationPage>} />
