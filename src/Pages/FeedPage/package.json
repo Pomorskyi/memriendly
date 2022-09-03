@@ -1,0 +1,11 @@
+{
+  "name": "feed-page",
+  "description": "Feed page",
+  "main": "FeedPage.js",
+  "version": "1.0",
+  "author": "Pomorskyi",
+  "private": true,
+  "peerDependencies": {
+    "react": "16.x"
+  }
+}

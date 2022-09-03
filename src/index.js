@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import './index.css';
+import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import App from './App';
-import FeedPage from './Pages/FeedPage';
+import { FeedPage } from './Pages'
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
