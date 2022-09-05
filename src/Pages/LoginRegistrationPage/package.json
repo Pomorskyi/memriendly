@@ -1,0 +1,11 @@
+{
+  "name": "login-reginstration-page",
+  "description": "Loginr reginstration page",
+  "main": "LoginReginstrationPage.js",
+  "version": "1.0",
+  "author": "Pomorskyi",
+  "private": true,
+  "peerDependencies": {
+    "react": "16.x"
+  }
+}

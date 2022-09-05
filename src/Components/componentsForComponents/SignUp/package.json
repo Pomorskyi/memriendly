@@ -1,0 +1,12 @@
+{
+    "name": "sign-up",
+    "description": "SignUp",
+    "main": "SignUp.js",
+    "version": "1.0",
+    "author": "Pomorskyi",
+    "private": true,
+    "peerDependencies": {
+      "react": "16.x"
+    }
+  }
+  

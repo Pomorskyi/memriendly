@@ -1,0 +1,11 @@
+{
+  "name": "components-for-components",
+  "description": "Components for components",
+  "main": "index.js",
+  "version": "1.0",
+  "author": "Pomorskyi",
+  "private": true,
+  "peerDependencies": {
+    "header": "1.0"
+  }
+}

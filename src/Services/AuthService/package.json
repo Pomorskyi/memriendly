@@ -1,0 +1,9 @@
+{
+  "name": "auth-service",
+  "description": "Authentication service",
+  "main": "AuthService.js",
+  "version": "1.0",
+  "author": "Pomorskyi",
+  "private": true,
+  "peerDependencies": {}
+}
