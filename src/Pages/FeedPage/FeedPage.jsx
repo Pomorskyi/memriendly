@@ -7,10 +7,14 @@ import {
   AccountSection,
   Footer
 } from '../../Components/componentsForPages'
+import AuthService from '../../Services/AuthService/AuthService';
 import PropTypes from 'prop-types';
 import './style.css'
 
 const FeedPage = ({ model }) => {
+
+  AuthService.CheckAuth(model);
+
   return (
     <Container className='FeedPageContainer h-100 d-flex flex-column' fluid>
       <Row className='h-10'>
