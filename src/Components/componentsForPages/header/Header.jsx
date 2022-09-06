@@ -28,4 +28,8 @@ Header.propTypes = {
   model: PropTypes.object.isRequired,
 };
 
+Header.defaultProps = {
+  model: {},
+};
+
 export default Header
