@@ -1,15 +1,17 @@
 import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { useNavigate  } from 'react-router-dom'
-import { useAuth } from '../../../Services/AuthContext/AuthContext'
+import { useAuth } from '../../../Services/Contexts/AuthContext'
 
 function SignUp() {
     const [isSignUp, setIsSignUp] = useState(false);
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const passwordConfirmRef = useRef()
-    const { signup, login } = useAuth()
+    const { signup, login, resetPassword } = useAuth()
     const [error, setError] = useState('')
+    const [info, setInfo] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate  = useNavigate()
 
@@ -47,7 +49,23 @@ function SignUp() {
         setLoading(false)
     }
 
+    async function handleSubmitForgotPassword(e){
+        e.preventDefault()
+
+        try {
+            setError('')
+            setLoading(true)
+            await resetPassword(email)
+                .then(res => { setInfo('Email has been sent') })
+                .catch(err => { setError('Email has not been sent. Try again') })
+        } catch(e) {
+            setError(`${e}`)
+        }
+        setLoading(false)
+    }
+
     function handleToggleState(isChangeToLogIn){
+        setInfo('')
         if(isChangeToLogIn){
             setIsSignUp(false)
         } else {
@@ -68,7 +86,26 @@ function SignUp() {
     <>
     {/*TODO: Change card for new styles from Telegram own messages */}
         <Card className="w-100">
-            {isSignUp && 
+            {isForgotPassword && 
+                <Card.Body>
+                <h2 className="text-center mb-4">Password Reset</h2>
+                {error && <Alert variant="danger">{error}</Alert>}
+                {info && <Alert variant="primary">{info}</Alert>}
+                <Form onSubmit={handleSubmitForgotPassword}>
+                    <Form.Group id="email">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="email" value={email} onChange={handleEmailChange} required />
+                    </Form.Group>
+                    <Button disabled={loading} className="w-100 mt-4" type="submit">
+                        Reset Password
+                    </Button>
+                </Form>
+                <div className="w-100 text-center mt-2">
+                    <button onClick={() => {setIsForgotPassword(false); setInfo('')}}>Log In</button>
+                </div>
+            </Card.Body>
+            }
+            { !isForgotPassword && isSignUp && 
                 <Card.Body>
                     <h2 className="text-center mb-4">Sign Up</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
@@ -94,7 +131,7 @@ function SignUp() {
                     </div>
                 </Card.Body>
             }
-            {!isSignUp && 
+            { !isForgotPassword && !isSignUp && 
                 <Card.Body>
                     <h2 className="text-center mb-4">Log In</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
@@ -111,6 +148,9 @@ function SignUp() {
                             Log In
                         </Button>
                     </Form>
+                    <div className="w-100 text-center mt-2">
+                        <button onClick={() => {setIsForgotPassword(true); setInfo('')}}>Forgot password?</button>
+                    </div>
                     <div className="w-100 text-center mt-2">
                         Need an account? <button onClick={() => {handleToggleState(false)}}>Sign Up</button>
                     </div>

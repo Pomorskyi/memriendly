@@ -1,20 +1,19 @@
 import React from 'react'
-// import { Container, Row } from 'react-bootstrap'
-// import { ButtonList } from '../../componentsForComponents';
+import { Button, Container } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import './style.css';
 
-const AccountSection = ({ model }) => {
+const AccountSection = ({ handleShow }) => {
 
 
 
   return (
-    <div className='AccountSectionMain'></div>
+    <div className='AccountSectionMain'>
+        <Button variant="primary" onClick={handleShow}>
+          Settings
+        </Button>
+    </div>
   )
 }
-
-AccountSection.propTypes = {
-  model: PropTypes.object.isRequired,
-};
 
 export default AccountSection

@@ -1,0 +1,12 @@
+{
+    "name": "avatar",
+    "description": "Avatar",
+    "main": "Avatar.jsx",
+    "version": "1.0",
+    "author": "Pomorskyi",
+    "private": true,
+    "peerDependencies": {
+      "react": "16.x"
+    }
+  }
+  
