@@ -4,7 +4,12 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  updateEmail,
+  updatePassword,
+  updateProfile
 } from "firebase/auth";
 
 const AuthContext = React.createContext()
@@ -29,9 +34,25 @@ export function AuthProvider({ children }) {
     return signOut(getAuth())
   }
 
+  function resetPassword(email) {
+    return sendPasswordResetEmail(getAuth(), email)
+  }
+
+  function updateEmailCustom(email) {
+    return updateEmail(currentUser, email);
+  }
+
+  function updatePasswordCustom(password) {
+    return updatePassword(currentUser, password);
+  }
+
+  // ex. dataObj = {displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"}
+  function updateProfileCustom(dataObj) {
+    return updateProfile(currentUser, dataObj);
+  }
+
   useEffect(() => {
-    const unsubscribe = getAuth().onAuthStateChanged(user => {
-      // console.log(user)
+    const unsubscribe = onAuthStateChanged(getAuth(), user => {
       setCurrentUser(user)
       setLoading()
     })
@@ -43,7 +64,11 @@ export function AuthProvider({ children }) {
     currentUser,
     signup,
     login,
-    logout
+    logout,
+    resetPassword,
+    updateEmailCustom,
+    updatePasswordCustom,
+    updateProfileCustom
   }
 
   return (

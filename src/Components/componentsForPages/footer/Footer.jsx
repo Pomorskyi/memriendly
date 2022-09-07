@@ -3,12 +3,12 @@ import { Row, Col, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types';
 import './style.css';
 
-const Footer = ({ handleLogout }) => {
+const Footer = () => {
 
   return (
     <Row className='footerMain'>
       <Col>
-        <Button variant="primary" onClick={handleLogout}>Log Out</Button>
+        SADSD
       </Col>
     </Row>
   )

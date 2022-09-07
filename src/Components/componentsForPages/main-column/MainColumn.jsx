@@ -4,14 +4,10 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import './style.css';
 
-const MainColumn = ({ model }) => {
+const MainColumn = () => {
   return (
     <div className='MainColumnMain'>asd</div>
   )
 }
-
-MainColumn.propTypes = {
-  model: PropTypes.object.isRequired,
-};
 
 export default MainColumn

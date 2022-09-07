@@ -4,5 +4,8 @@
 }
 
 .logo{
-    width: fit-content;
+    position: relative;
+    max-width: 9rem;
+    height: auto;
+    cursor: pointer;
 }
