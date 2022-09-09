@@ -1,34 +1,34 @@
-import React, { useEffect } from 'react'
-// import { Container, Row } from 'react-bootstrap'
-// import { ButtonList } from '../../componentsForComponents';
+import React from 'react'
 import { Link } from "react-router-dom";
-import PropTypes from 'prop-types';
 import './style.css';
 
 const ListOfChannels = ({ model }) => {
-  console.log(model)
+  // console.log(model)
 
   function getListOfElements() {
     const res = []
-    Object.keys(model.listOfChannels).map((el) => {
-      console.log(el)
-      console.log(model.listOfChannels[el])
+    Object.keys(model.channels).map((el) => {
       res.push(
-        <li className='listElement'>
+        <li className='listElement mb-2' key={el}>
           <Link
+            className='listElementLink'
             to={'/channel/' + el}
           >
-            {model.listOfChannels[el].name}
+            <div className="listElementLinkContainer">
+              <img className='avatar' alt='avatar' src={
+                model.channels[el].photoUrl.length > 0 ? model.channels[el].photoUrl : '/images/noavatar.png'}
+              />
+              <div className='listElementLinkText ml-2'>{model.channels[el].name}</div>
+            </div>
           </Link>
         </li>
       )
     })
-    console.log(res)
-    return <ul className='listOfElementsLi hor-center'>{res}</ul>
+    return <ul className='listOfElementsUl hor-center'>{res}</ul>
   }
 
   return (
-    <div className="ListOfChannelsMain text-center">
+    <div className="ListOfChannelsMain" id="scrollbarstyle">
       {getListOfElements()}
     </div>
   )
