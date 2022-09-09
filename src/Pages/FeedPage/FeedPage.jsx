@@ -8,15 +8,23 @@ import {
   AccountSection,
   Footer
 } from '../../Components/componentsForPages'
+import {
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 import { useAuth } from '../../Services/Contexts/AuthContext';
-import { useDb } from '../../Services/Contexts/DatabaseContext';
+import { useDatabase } from '../../Services/Contexts/DatabaseContext';
 import './style.css'
 import MyAccountModal from '../../Components/Modals/MyAccountModal/MyAccountModal';
 
 const FeedPage = () => {
+  const [loading, setLoading ] = useState(true)
+  // const [channelsRoutes, setChannelsRoutes] = useState([])
+  const [model, setModel] = useState('')
   const [error, setError] = useState('')
   const { currentUser, logout } = useAuth()
-  const { readData } = useDb()
+  const { users, channels } = useDatabase()
   const navigate = useNavigate()
   const [showSettings, setShowSettings] = useState(false);
 
@@ -27,16 +35,24 @@ const FeedPage = () => {
   const handleShow = () => setShowSettings(true);
 
   useEffect(() => {
-    // readData()
-    // console.log('testStarted')
-    // console.log(currentUser)
-    // const list = ['KJSd67', 'as8ISD7', 'KSdyoi8w']
-    // updateProfileCustom({ listOfOwnGroups: list})
-
-    // setTimeout(() => {
-    //   console.log(currentUser)
-    // }, 4000)
-  }, [])
+    setModel({
+      listOfChannels: channels
+    })
+    
+    // const res = []
+    // Object.keys(channels).map((el) => {
+    //   res.push(
+        
+    //   )        
+    // })
+    // console.log(res)
+    // console.log(channels)
+    // writeChannel(currentUser, 'a')
+    // writeChannel(currentUser, 'b')
+    // writeChannel(currentUser, 'c')
+    // writeChannel(currentUser, 'd')
+    setLoading(false)
+  }, [channels])
 
   async function handleLogoutProp() {
     setError('')
@@ -49,31 +65,39 @@ const FeedPage = () => {
      }
   }
 
+  function testListOfChannels(){
+    return {
+      listOfChannels: channels
+    }
+  }
+
+  if(loading) return <p>loading</p>
+    else 
   return (
-    <Container className='FeedPageContainer h-100 d-flex flex-column' fluid>
-      <MyAccountModal handleClose={handleCloseFunc} currentUser={currentUser} showSettings={showSettings} />
-      <Row className='h-10'>
-        <Col className='h-100'>
-          <Header className='h-100' handleLogout={handleLogoutProp} ></Header>
-        </Col>
-      </Row>
-      <Row className='flex-grow-1 h-80'>
-        <Col sm={0} md={0} lg={3} xl={2} xxl={2} className='d-none d-lg-block'>
-          <ListOfChannels className='listOfChannels'></ListOfChannels>
-        </Col>
-        <Col sm={12} md={8} lg={6} xl={8} xxl={8}>
-          <MainColumn className='mainColumn'></MainColumn>
-        </Col>
-        <Col sm={0} md={4} lg={3} xl={2} xxl={2} className='d-none d-md-block'>
-          <AccountSection handleShow={handleShow} currentUser={currentUser} className='accountSection'></AccountSection>
-        </Col>
-      </Row>
-      <Row className='h-10'>
-        <Col>
-          <Footer />
-        </Col>
-      </Row>
-    </Container>
+        <Container className='FeedPageContainer h-100 d-flex flex-column' fluid>
+          <MyAccountModal handleClose={handleCloseFunc} currentUser={currentUser} showSettings={showSettings} />
+          <Row className='h-10'>
+            <Col className='h-100'>
+              <Header className='h-100' handleLogout={handleLogoutProp} ></Header>
+            </Col>
+          </Row>
+          <Row className='flex-grow-1 h-80'>
+            <Col sm={0} md={0} lg={3} xl={3} xxl={2} className='d-none d-lg-block'>
+              <ListOfChannels className='listOfChannels' model={model}></ListOfChannels>
+            </Col>
+            <Col sm={12} md={8} lg={6} xl={6} xxl={8}>
+              <MainColumn className='mainColumn' currentUser={currentUser} users={users} channels={channels} ></MainColumn>
+            </Col>
+            <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block'>
+              <AccountSection handleShow={handleShow} currentUser={currentUser} className='accountSection'></AccountSection>
+            </Col>
+          </Row>
+          <Row className='h-10'>
+            <Col>
+              <Footer />
+            </Col>
+          </Row>
+        </Container>
   )
 }
 

@@ -4,9 +4,13 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import './style.css';
 
-const MainColumn = () => {
+const MainColumn = ({ currentUser, users, channels, writeChannel }) => {
   return (
-    <div className='MainColumnMain'>asd</div>
+    <div className='MainColumnMain'>
+      {/* <h6>{JSON.stringify(users)}</h6>
+      <h6>{JSON.stringify(channels)}</h6> */}
+      {/* <button onClick={() => {}}>Create Channel</button> */}
+    </div>
   )
 }
 

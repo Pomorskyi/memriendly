@@ -1,67 +1,83 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { database } from './firebase';
+import { sha256 } from 'js-sha256';
 import { ref, set, child, get } from "firebase/database";
 
-
-
-// const starCountRef = ref(db, 'posts/' + postId + '/starCount');
-// onValue(starCountRef, (snapshot) => {
-//   const data = snapshot.val();
-//   updateStarCount(postElement, data);
-// });
 const DatabaseContext = React.createContext()
 
-export function useDb() {
+export function useDatabase() {
   return useContext(DatabaseContext);
 }
 
 export function DatabaseProvider({ children }) {
   const dbRef = ref(database);
-//   const [currentUser, setCurrentUser] = useState()
-  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([])
+  const [channels, setChannels] = useState([])
+  const [loading, setLoading] = useState(false);
 
-  function readData(){
-    return get(child(dbRef, `users`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-      } else {
-        console.log("No data available");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        getAllTable('users').then((res) => setUsers(res))
+        getAllTable('channels').then((res) => setChannels(res))
+      } catch (error) {
+        console.log("error", error);
       }
-    }).catch((error) => {
-      console.error(error);
-    });
+    };
+
+    fetchData();
+  }, [])
+
+  // name = { users, channels }
+  async function getAllTable(name) {
+    return await get(child(dbRef, name))
+      .then((snapshot) => {
+        return snapshot.exists() ? snapshot.val() : []
+      }).catch((error) => {
+        console.error(error);
+      });
   }
 
-  // function writeUserData(userId, imageUrl) {
-  //   return set(ref(database, 'users/' + userId), {
-  //     // username: name,
-  //     // email: email,
-  //     profile_picture : imageUrl
-  //   });
-  // }
+  function write(tableName, id, data) {
+    console.log(data)
+    set(ref(database, tableName + '/' + id), data);
+  }
+  
+  function writeChannel(currentUser, name) {
+    const dateOfCreation = new Date().toString()
+    const idOfChannel = sha256(JSON.stringify(currentUser) + 
+      dateOfCreation + 
+      name);
 
-//   function updatePasswordCustom(password) {
-    // return updatePassword(currentUser, password);
-//   }
+    write('channels', idOfChannel, {
+      owner: currentUser.uid,
+      name: name,
+      dateOfCreation: dateOfCreation,
+      description: '',
+      listOfMessages: [],
+      isChatOrPublic: 'public',
+      photoUrl: ''
+    })
+  }
 
-
-//   useEffect(() => {
-//     const unsubscribe = onAuthStateChanged(getAuth(), user => {
-//       setCurrentUser(user)
-//       setLoading()
-//     })
-
-//     return unsubscribe
-//   }, [])
+  function writeUser(userId, email) {
+    write('users', userId, {
+      email: email,
+      listofOwnChanels: []
+    })
+  }
 
   const value = {
-    // writeUserData,
-    readData
+    users,
+    channels,
+    writeUser,
+    writeChannel
+    // readData
     // resetPassword,
     // updateEmailCustom,
     // updatePasswordCustom,
     // updateProfileCustom
-  }
+  };
 
   return (
     <DatabaseContext.Provider value={value}>
