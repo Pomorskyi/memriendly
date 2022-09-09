@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { auth } from './firebase';
+import { useDatabase } from '../../Services/Contexts/DatabaseContext';
+import { DatabaseProvider } from '../../Services/Contexts/DatabaseContext';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -21,6 +23,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState()
   const [loading, setLoading] = useState(true);
+  const { writeUser, users } = useDatabase()
 
   function login(email, password) {
     return signInWithEmailAndPassword(getAuth(), email, password)
@@ -28,6 +31,7 @@ export function AuthProvider({ children }) {
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(getAuth(), email, password)
+      .then((res) => writeUser(res.user.uid, email))
   }
 
   function logout() {
