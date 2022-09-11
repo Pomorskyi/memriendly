@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { database } from './firebase';
 import { sha256 } from 'js-sha256';
+import _ from 'lodash';
 import { ref, set, child, get } from "firebase/database";
 
 const DatabaseContext = React.createContext()
@@ -28,6 +29,10 @@ export function DatabaseProvider({ children }) {
     fetchData();
   }, [])
 
+  function clearDuplicates() {
+    set(ref(database, 'channels/127b82dd31714b6d54cd85a82e78ea5914764c202716de1a1c354499aff64f43'), null);
+  }
+
   // name = { users, channels }
   async function getAllTable(name) {
     return await get(child(dbRef, name))
@@ -39,7 +44,6 @@ export function DatabaseProvider({ children }) {
   }
 
   function write(tableName, id, data) {
-    console.log(data)
     set(ref(database, tableName + '/' + id), data);
   }
   
@@ -56,8 +60,30 @@ export function DatabaseProvider({ children }) {
       description: '',
       listOfMessages: [],
       isChatOrPublic: 'public',
-      photoUrl: ''
+      photoUrl: '',
+      inputtedMessage: ''
     })
+  }
+
+  function writeMessage(channelId, owner, message) {
+    const currentChannel = channels[channelId];
+    const messageStack = (_.isNil(currentChannel.messageStack) ? [] : currentChannel.messageStack)
+    messageStack.push({
+      message: message,
+      owner: owner,
+      datatime: new Date().toString()
+    })
+
+    const newChannelObj = _.clone(channels[channelId])
+    newChannelObj.messageStack = messageStack
+
+    write('channels', channelId, newChannelObj)
+
+    const newChannels = _.clone(channels)
+    // const newChannel = _.clone(channels[channelId])
+    // newChannelObj.messageStack = messageStack
+    newChannels[channelId] = newChannelObj
+    setChannels(newChannels)
   }
 
   function writeUser(userId, email) {
@@ -71,7 +97,9 @@ export function DatabaseProvider({ children }) {
     users,
     channels,
     writeUser,
-    writeChannel
+    writeChannel,
+    writeMessage,
+    clearDuplicates
     // readData
     // resetPassword,
     // updateEmailCustom,

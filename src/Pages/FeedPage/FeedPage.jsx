@@ -20,7 +20,7 @@ const FeedPage = () => {
   const [model, setModel] = useState({})
   const [error, setError] = useState('')
   const { currentUser, logout } = useAuth()
-  const { users, channels } = useDatabase()
+  const { users, channels, clearDuplicates } = useDatabase()
   let params = useParams();
   const navigate = useNavigate()
   const [showSettings, setShowSettings] = useState(false);
@@ -30,12 +30,10 @@ const FeedPage = () => {
   }
   const handleShow = () => setShowSettings(true);
 
-  // const currentChannel = useMemo(() => {
-    
-
-  // }, [params.channelId, model.channels])
-
-
+  // useEffect(() => {
+  //   clearDuplicates()
+  // }, []);
+  
   useEffect(() => {
     setLoading(true);
     const newModel = _.clone(model);
@@ -49,10 +47,6 @@ const FeedPage = () => {
       }
 
       const isItRealUrl = channels.hasOwnProperty(params.channelId)
-      // Object.keys(model.channels).find((el) => {
-      //   return el === params.channelId
-      // })
-      
       if(isItRealUrl) {
         const { [params.channelId]: channel } = channels
         return {
@@ -66,19 +60,9 @@ const FeedPage = () => {
 
     newModel.currentChannel = fetchCurrentChannelIntoModel()
     
-    console.log(newModel)
-
     setModel(newModel);
     setLoading(false);
   }, [channels, currentUser, users, params.channelId])
-
-  // function setCurrentChannel (channelId) {
-  //   setLoading(true);
-  //   const newModel = _.clone(model);
-  //   newModel.currentChannel = channelId;
-  //   setModel(newModel);
-  //   setLoading(false)
-  // }
 
   async function handleLogoutProp() {
     setError('')
@@ -98,7 +82,7 @@ const FeedPage = () => {
       <MyAccountModal handleClose={handleCloseFunc} model={model} showSettings={showSettings} />
       <Row style={{ height: '6vh' }}>
         <Col className='h-100'>
-          <Header className='h-100' handleLogout={handleLogoutProp} ></Header>
+          <Header className='h-100' handleLogout={handleLogoutProp} model={model}></Header>
         </Col>
       </Row>
       <Row className='h-80' style={{ height: '89vh' }}>
@@ -106,7 +90,7 @@ const FeedPage = () => {
           <ListOfChannels className='listOfChannels' model={model} ></ListOfChannels>
         </Col>
         <Col sm={12} md={8} lg={6} xl={6} xxl={8}>
-          <MainColumn className='mainColumn' model={model} currentChannelId={params.channelId}></MainColumn>
+          <MainColumn className='mainColumn' model={model} setModel={setModel} params={params} ></MainColumn>
         </Col>
         <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block'>
           <AccountSection handleShow={handleShow} model={model} className='accountSection'></AccountSection>

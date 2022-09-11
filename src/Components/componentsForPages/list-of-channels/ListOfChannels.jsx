@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import './style.css';
 
 const ListOfChannels = ({ model }) => {
-  // console.log(model)
 
   function getListOfElements() {
     const res = []
@@ -28,7 +27,7 @@ const ListOfChannels = ({ model }) => {
   }
 
   return (
-    <div className="ListOfChannelsMain" id="scrollbarstyle">
+    <div className="ListOfChannelsMain scrollbarstyle">
       {getListOfElements()}
     </div>
   )
