@@ -80,8 +80,6 @@ export function DatabaseProvider({ children }) {
     write('channels', channelId, newChannelObj)
 
     const newChannels = _.clone(channels)
-    // const newChannel = _.clone(channels[channelId])
-    // newChannelObj.messageStack = messageStack
     newChannels[channelId] = newChannelObj
     setChannels(newChannels)
   }
@@ -89,7 +87,8 @@ export function DatabaseProvider({ children }) {
   function writeUser(userId, email) {
     write('users', userId, {
       email: email,
-      listofOwnChanels: []
+      listofOwnChanels: [],
+      nickname: userId.slice(12)
     })
   }
 
@@ -100,11 +99,6 @@ export function DatabaseProvider({ children }) {
     writeChannel,
     writeMessage,
     clearDuplicates
-    // readData
-    // resetPassword,
-    // updateEmailCustom,
-    // updatePasswordCustom,
-    // updateProfileCustom
   };
 
   return (
@@ -113,70 +107,3 @@ export function DatabaseProvider({ children }) {
     </DatabaseContext.Provider>
   )
 }
-
-
-
-
-// export function useAuth() {
-//   return useContext(AuthContext);
-// }
-
-// export function AuthProvider({ children }) {
-//   const [currentUser, setCurrentUser] = useState()
-//   const [loading, setLoading] = useState(true);
-
-//   function login(email, password) {
-//     return signInWithEmailAndPassword(getAuth(), email, password)
-//   }
-
-//   function signup(email, password) {
-//     return createUserWithEmailAndPassword(getAuth(), email, password)
-//   }
-
-//   function logout() {
-//     return signOut(getAuth())
-//   }
-
-//   function resetPassword(email) {
-//     return sendPasswordResetEmail(getAuth(), email)
-//   }
-
-//   function updateEmailCustom(email) {
-//     return updateEmail(currentUser, email);
-//   }
-
-//   function updatePasswordCustom(password) {
-//     return updatePassword(currentUser, password);
-//   }
-
-//   // ex. dataObj = {displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"}
-//   function updateProfileCustom(dataObj) {
-//     return updateProfile(currentUser, dataObj);
-//   }
-
-//   useEffect(() => {
-//     const unsubscribe = onAuthStateChanged(getAuth(), user => {
-//       setCurrentUser(user)
-//       setLoading()
-//     })
-
-//     return unsubscribe
-//   }, [])
-
-//   const value = {
-//     currentUser,
-//     signup,
-//     login,
-//     logout,
-//     resetPassword,
-//     updateEmailCustom,
-//     updatePasswordCustom,
-//     updateProfileCustom
-//   }
-
-//   return (
-//     <AuthContext.Provider value={value}>
-//       {!loading && children}
-//     </AuthContext.Provider>
-//   )
-// }

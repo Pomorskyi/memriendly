@@ -57,7 +57,6 @@ const FeedPage = () => {
         return null
       }
     }
-
     newModel.currentChannel = fetchCurrentChannelIntoModel()
     
     setModel(newModel);
@@ -75,7 +74,7 @@ const FeedPage = () => {
      }
   }
 
-  if(loading) return <p>loading</p>
+  if(loading || _.isNil(model)) return <p>loading</p>
     else 
   return (
     <Container className='FeedPageContainer h-100 d-flex flex-column' fluid>
