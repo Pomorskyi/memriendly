@@ -9,6 +9,10 @@ const MainColumn = ({ model, setModel, params }) => {
   const { writeMessage } = useDatabase()
 
   // useEffect(() => {
+  //   console.log(model)
+  // }, []);
+
+  // useEffect(() => {
   //   const lastMes = message
   //   console.log(message)
   //   console.log('changedChanged')
@@ -51,6 +55,63 @@ const MainColumn = ({ model, setModel, params }) => {
   //   }
   // }, [model.currentChannel])
 
+  // message: message,
+  // owner: owner,
+  // datatime: new Date().toString()
+
+  function getUserNickname(uid){
+    if(_.isNil(model.users[uid])){
+      return 'Unknown User'
+    } else {
+      return model.users[uid].nickname
+    }
+  }
+
+  const messages = useMemo(() => {
+    if(_.isNil(model.currentChannel)){
+      return 'choose chanel first'
+    }
+    const result = [];
+    console.log(model)
+    const messToRender = model.channels[model.currentChannel.channelId].messageStack;
+
+    if(_.isNil(messToRender)){
+      return 'no messages in that channel'
+    }
+
+    messToRender.forEach((obj, ind) => {
+      const isMine = obj.owner === model.currentUser.uid
+
+      console.log(obj)
+
+      result.push(
+        <Row className='mt-2' key={model.currentChannel.channelId + 'mes' + ind}>
+          { isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}
+          <Col sm={12} md={10} lg={9} xl={9} xxl={9}>
+            <div className='message'>
+              <img className='messagAavatar avatar' alt='avatar' src={ 
+                (model && 
+                model.currentChannel && 
+                model.currentChannel.photoUrl &&
+                model.currentChannel.photoUrl.length > 0) ? model.currentChannel.photoUrl : '/images/noavatar.png'}
+              />
+              <div className='messageText'>
+                <h6 className='ownerOfMessage'>{getUserNickname(obj.owner)}</h6>
+                {obj.message}
+              </div>
+            </div>
+            <div className='messageData'>
+              {obj.datatime}
+            </div>
+          </Col>
+          { !isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}
+        </Row>
+      )
+    })
+
+    return result.reverse();
+  }, [model]);
+
   function handleMessageChange(e){
     e.preventDefault()
 
@@ -67,9 +128,7 @@ const MainColumn = ({ model, setModel, params }) => {
   //TODO: if(JSON.stringify(model.currentChannel) === null) show 'No chosen Channel'
   return (
     <div className='MainColumnMain'>
-      <div className='messagesArea'>
-        {JSON.stringify(model.currentChannel)}
-      </div>
+      {/* {JSON.stringify(model.currentChannel)} */}
       <Form onSubmit={handleSubmit} className='inputMessageForm'>
         <Form.Group id="message" className="messageTextArea">
           <textarea
@@ -84,13 +143,9 @@ const MainColumn = ({ model, setModel, params }) => {
             Send
         </button>
       </Form>
-      {/* {
-        { currentChannel } = model.channels
-      } */}
-      {/* {model.channels.find(el => el.)} */}
-      {/* <h6>{JSON.stringify(users)}</h6>
-      <h6>{JSON.stringify(channels)}</h6> */}
-      {/* <button onClick={() => {}}>Create Channel</button> */}
+      <Container className='scrollbarstyle messageContainer messagesArea mb-4'>
+        {messages}
+      </Container>
     </div>
   )
 }
