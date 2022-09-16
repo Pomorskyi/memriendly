@@ -12,9 +12,18 @@ export function useDatabase() {
 
 export function DatabaseProvider({ children }) {
   const dbRef = ref(database);
+  // const {  } = 
   const [users, setUsers] = useState([])
   const [channels, setChannels] = useState([])
   const [loading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  //   setUsers(getAllTable('users'))
+  // }, [getAllTable('users')])
+
+  // useEffect(() => {
+  //   setChannels(getAllTable('channels'))
+  // }, [getAllTable('channels')])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +97,15 @@ export function DatabaseProvider({ children }) {
     write('users', userId, {
       email: email,
       listofOwnChanels: [],
-      nickname: userId.slice(12)
+      nickname: userId
+    })
+  }
+
+  function updateNickname(userId, nickname) {
+    write('users', userId, {
+      email: users[userId].email,
+      listofOwnChanels: users[userId].listofOwnChanels,
+      nickname: nickname
     })
   }
 
@@ -98,7 +115,8 @@ export function DatabaseProvider({ children }) {
     writeUser,
     writeChannel,
     writeMessage,
-    clearDuplicates
+    clearDuplicates,
+    updateNickname
   };
 
   return (

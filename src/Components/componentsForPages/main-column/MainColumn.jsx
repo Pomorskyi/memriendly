@@ -9,10 +9,6 @@ const MainColumn = ({ model, setModel, params }) => {
   const { writeMessage } = useDatabase()
 
   // useEffect(() => {
-  //   console.log(model)
-  // }, []);
-
-  // useEffect(() => {
   //   const lastMes = message
   //   console.log(message)
   //   console.log('changedChanged')
@@ -79,10 +75,12 @@ const MainColumn = ({ model, setModel, params }) => {
       return 'no messages in that channel'
     }
 
+    console.log(model)
+    console.log(model.currentChannel)
+    console.log(model.currentUser)
+
     messToRender.forEach((obj, ind) => {
       const isMine = obj.owner === model.currentUser.uid
-
-      console.log(obj)
 
       result.push(
         <Row className='mt-2' key={model.currentChannel.channelId + 'mes' + ind}>
@@ -127,7 +125,7 @@ const MainColumn = ({ model, setModel, params }) => {
 
   //TODO: if(JSON.stringify(model.currentChannel) === null) show 'No chosen Channel'
   return (
-    <div className='MainColumnMain'>
+    <div className='MainColumnMain scrollbarstyle'>
       {/* {JSON.stringify(model.currentChannel)} */}
       <Form onSubmit={handleSubmit} className='inputMessageForm'>
         <Form.Group id="message" className="messageTextArea">

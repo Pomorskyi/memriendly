@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react'
 import PropTypes from 'prop-types';
 import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap'
 import { useAuth } from '../../../Services/Contexts/AuthContext';
+import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 import { Avatar } from '../../componentsForComponents';
 import './style.css';
 
@@ -10,7 +11,9 @@ const MyAccountModal = ({ handleClose, showSettings }) => {
   const [error, setError] = useState(false)
   const [info, setInfo] = useState(false)
   const { currentUser, updateEmailCustom, updatePasswordCustom } = useAuth()
+  const { updateNickname } = useDatabase()
   const emailRef = useRef()
+  const nicknameRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
 
@@ -20,7 +23,9 @@ const MyAccountModal = ({ handleClose, showSettings }) => {
       return setError('Password do not match')
     }
 
-    if (passwordRef.current.value === '' && currentUser.email === emailRef.current.value){
+    if (nicknameRef.current.value === '' &&
+        passwordRef.current.value === '' &&
+        currentUser.email === emailRef.current.value){
       setInfo('You need to change fields below to update profile')
       return setTimeout(() => {setInfo('')}, 5000)
     }
@@ -33,6 +38,10 @@ const MyAccountModal = ({ handleClose, showSettings }) => {
     }
     if (passwordRef.current.value){
       promises.push(updatePasswordCustom(passwordRef.current.value))
+    }
+    if (nicknameRef.current.value){
+      console.log(currentUser)
+      promises.push(updateNickname(currentUser.uid, passwordRef.current.value))
     }
 
     Promise.all(promises).then(() => {
@@ -61,6 +70,10 @@ const MyAccountModal = ({ handleClose, showSettings }) => {
                 {error && <Alert variant="danger">{error}</Alert>}
                 {info && <Alert variant="primary">{info}</Alert>}
                 <Form onSubmit={handleSubmit}>
+                  <Form.Group id="nickname">
+                      <Form.Label>Nickname</Form.Label>
+                      <Form.Control type="nickname" ref={nicknameRef} placeholder="Leave blank to keep the same"/>
+                  </Form.Group>
                   <Form.Group id="email">
                       <Form.Label>Email</Form.Label>
                       <Form.Control type="email" ref={emailRef} required defaultValue={currentUser.email}/>
@@ -89,14 +102,5 @@ const MyAccountModal = ({ handleClose, showSettings }) => {
       </Modal>
   )
 }
-
-MyAccountModal.propTypes = {
-  // listOfNames: PropTypes.array.isRequired,
-  // listOfOnClicks: PropTypes.array.isRequired,
-};
-
-MyAccountModal.defaultProps = {
-  // model: {},
-};
 
 export default MyAccountModal

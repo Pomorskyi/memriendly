@@ -31,6 +31,10 @@ const FeedPage = () => {
   const handleShow = () => setShowSettings(true);
 
   // useEffect(() => {
+  //   console.log(users)
+  // }, [users]);
+
+  // useEffect(() => {
   //   clearDuplicates()
   // }, []);
   
@@ -88,7 +92,7 @@ const FeedPage = () => {
         <Col sm={0} md={0} lg={3} xl={3} xxl={2} className='d-none d-lg-block' style={{ height: '100%' }}>
           <ListOfChannels className='listOfChannels' model={model} ></ListOfChannels>
         </Col>
-        <Col sm={12} md={8} lg={6} xl={6} xxl={8}>
+        <Col sm={12} md={8} lg={6} xl={6} xxl={8} style={{ height: '100%' }}>
           <MainColumn className='mainColumn' model={model} setModel={setModel} params={params} ></MainColumn>
         </Col>
         <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block'>
