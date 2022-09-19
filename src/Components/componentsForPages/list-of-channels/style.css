@@ -13,7 +13,7 @@
     flex-direction: column;
     margin: 0;
     padding: 0;
-    max-height: 100%;
+    min-height: 100%;
 }
 
 .listElement {
@@ -45,4 +45,22 @@
 .listElementLinkText{
     padding-top: .2rem;
     width: auto;
+    word-wrap: break-word;
+    word-break: break-all; 
+}
+
+.searchChannel{
+    width: 100%;
+    margin: .4rem 0;
+}
+
+.closeSearchBtn{
+    cursor: pointer;
+    display: inline-block;
+    background-color: transparent;
+    float: right;
+}
+
+.searchLabel{
+    display: inline-block;
 }

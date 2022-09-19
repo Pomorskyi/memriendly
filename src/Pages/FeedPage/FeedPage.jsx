@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import { useNavigate  } from 'react-router-dom'
 import {
@@ -11,33 +11,68 @@ import {
 import { useAuth } from '../../Services/Contexts/AuthContext';
 import { useDatabase } from '../../Services/Contexts/DatabaseContext';
 import { useParams } from "react-router-dom";
+import MyAccountModal from '../../Components/Modals/MyAccountModal/MyAccountModal';
+import CreateChannelModal from 'src/Components/Modals/CreateChannelModal/CreateChannelModal';
 import _ from 'lodash';
 import './style.css'
-import MyAccountModal from '../../Components/Modals/MyAccountModal/MyAccountModal';
 
 const FeedPage = () => {
   const [loading, setLoading ] = useState(true)
   const [model, setModel] = useState({})
   const [error, setError] = useState('')
   const { currentUser, logout } = useAuth()
-  const { users, channels, clearDuplicates } = useDatabase()
+  const { users, channels, writeChannelObj, writeUserObj, updateChannelsTable, updateUsersTable } = useDatabase()
   let params = useParams();
   const navigate = useNavigate()
   const [showSettings, setShowSettings] = useState(false);
+  const [showCreateChannel, setShowCreateChannel] = useState(false);
 
-  async function handleCloseFunc() {
+  async function handleCloseSettings() {
     setShowSettings(false);
   }
-  const handleShow = () => setShowSettings(true);
 
-  // useEffect(() => {
-  //   console.log(users)
-  // }, [users]);
+  async function handleCloseCreateChannel() {
+    setShowCreateChannel(false);
+  }
 
-  // useEffect(() => {
-  //   clearDuplicates()
-  // }, []);
-  
+  const subscribeToCurrentChannel = useCallback(() => {
+    setLoading(true);
+
+    if (model.currentChannel.subscribers === undefined || 
+        !model.currentChannel.subscribers.includes(model.currentUser.uid)){
+      const newChannel = _.clone(model.channels[model.currentChannel.channelId]);
+      if(newChannel.subscribers) {
+        newChannel.subscribers.push(model.currentUser.uid)
+      } else {
+        newChannel.subscribers = []
+        newChannel.subscribers.push(model.currentUser.uid)
+      }
+    
+      writeChannelObj(model.currentChannel.channelId, newChannel)
+    }
+
+    if (!model.users[model.currentUser.uid].listOfSubscribedChannels.includes(model.currentChannel.channelId)){
+      const newUser = _.clone(model.users[model.currentUser.uid]);
+      if(newUser.listOfSubscribedChannels) {
+        newUser.listOfSubscribedChannels.push(model.currentChannel.channelId)
+      } else {
+        newUser.listOfSubscribedChannels = []
+        newUser.listOfSubscribedChannels.push(model.currentChannel.channelId)
+      }
+      
+      writeUserObj(model.currentUser.uid, newUser)
+    }
+    
+    updateChannelsTable()
+    updateUsersTable()
+    
+    setLoading(false);
+  }, [model, currentUser])
+
+  const handleShowSettings = () => setShowSettings(true);
+
+  const handleShowCreateChannel = () => setShowCreateChannel(true);
+
   useEffect(() => {
     setLoading(true);
     const newModel = _.clone(model);
@@ -82,7 +117,8 @@ const FeedPage = () => {
     else 
   return (
     <Container className='FeedPageContainer h-100 d-flex flex-column' fluid>
-      <MyAccountModal handleClose={handleCloseFunc} model={model} showSettings={showSettings} />
+      <MyAccountModal handleClose={handleCloseSettings} model={model} show={showSettings} />
+      <CreateChannelModal handleClose={handleCloseCreateChannel} setShowCreateChannel={setShowCreateChannel} model={model} show={showCreateChannel} />
       <Row style={{ height: '6vh' }}>
         <Col className='h-100'>
           <Header className='h-100' handleLogout={handleLogoutProp} model={model}></Header>
@@ -96,7 +132,12 @@ const FeedPage = () => {
           <MainColumn className='mainColumn' model={model} setModel={setModel} params={params} ></MainColumn>
         </Col>
         <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block'>
-          <AccountSection handleShow={handleShow} model={model} className='accountSection'></AccountSection>
+          <AccountSection 
+            handleShowSettings={handleShowSettings} 
+            handleShowCreateChannel={handleShowCreateChannel}
+            subscribeToCurrentChannel={subscribeToCurrentChannel}
+            model={model} 
+            className='accountSection' />
         </Col>
       </Row>
       <Row style={{ height: '5vh' }}>
