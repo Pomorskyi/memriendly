@@ -12,7 +12,6 @@ export function useDatabase() {
 
 export function DatabaseProvider({ children }) {
   const dbRef = ref(database);
-  // const {  } = 
   const [users, setUsers] = useState([])
   const [channels, setChannels] = useState([])
   const [loading, setLoading] = useState(false);
@@ -38,9 +37,17 @@ export function DatabaseProvider({ children }) {
     fetchData();
   }, [])
 
-  function clearDuplicates() {
-    set(ref(database, 'channels/127b82dd31714b6d54cd85a82e78ea5914764c202716de1a1c354499aff64f43'), null);
+  function updateUsersTable() {
+    getAllTable('users').then((res) => setUsers(res))
   }
+
+  function updateChannelsTable() {
+    getAllTable('channels').then((res) => setChannels(res))
+  }
+
+  // function clearDuplicates() {
+  //   set(ref(database, 'channels/127b82dd31714b6d54cd85a82e78ea5914764c202716de1a1c354499aff64f43'), null);
+  // }
 
   // name = { users, channels }
   async function getAllTable(name) {
@@ -56,7 +63,7 @@ export function DatabaseProvider({ children }) {
     set(ref(database, tableName + '/' + id), data);
   }
   
-  function writeChannel(currentUser, name) {
+  function writeChannel(currentUser, name, description = '', photoUrl = '') {
     const dateOfCreation = new Date().toString()
     const idOfChannel = sha256(JSON.stringify(currentUser) + 
       dateOfCreation + 
@@ -65,13 +72,18 @@ export function DatabaseProvider({ children }) {
     write('channels', idOfChannel, {
       owner: currentUser.uid,
       name: name,
+      subscribers: [],
       dateOfCreation: dateOfCreation,
-      description: '',
+      description: description,
       listOfMessages: [],
       isChatOrPublic: 'public',
-      photoUrl: '',
+      photoUrl: photoUrl,
       inputtedMessage: ''
     })
+  }
+
+  function writeChannelObj(id, obj) {
+    write('channels', id, obj)
   }
 
   function writeMessage(channelId, owner, message) {
@@ -97,8 +109,13 @@ export function DatabaseProvider({ children }) {
     write('users', userId, {
       email: email,
       listofOwnChanels: [],
+      listOfSubscribedChannels: [],
       nickname: userId
     })
+  }
+
+  function writeUserObj(userId, obj) {
+    write('users', userId, obj)
   }
 
   function updateNickname(userId, nickname) {
@@ -113,10 +130,13 @@ export function DatabaseProvider({ children }) {
     users,
     channels,
     writeUser,
+    writeUserObj,
     writeChannel,
+    writeChannelObj,
     writeMessage,
-    clearDuplicates,
-    updateNickname
+    updateNickname,
+    updateChannelsTable,
+    updateUsersTable
   };
 
   return (

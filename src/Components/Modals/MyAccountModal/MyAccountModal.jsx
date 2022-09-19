@@ -6,7 +6,7 @@ import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 import { Avatar } from '../../componentsForComponents';
 import './style.css';
 
-const MyAccountModal = ({ handleClose, showSettings }) => {
+const MyAccountModal = ({ handleClose, show }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [info, setInfo] = useState(false)
@@ -55,7 +55,7 @@ const MyAccountModal = ({ handleClose, showSettings }) => {
   }
 
   return (
-    <Modal show={showSettings} onHide={handleClose} className='modal-lg'>
+    <Modal show={show} onHide={handleClose} className='modal-lg'>
         <Modal.Header closeButton>
           <Modal.Title>Account Settings</Modal.Title>
         </Modal.Header>
