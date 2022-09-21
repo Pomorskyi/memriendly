@@ -23,16 +23,18 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState()
   const [loading, setLoading] = useState(true);
-  const { writeUser, updateUsersTable, users } = useDatabase()
+  const { writeUser, updateTable } = useDatabase()
 
   function login(email, password) {
     return signInWithEmailAndPassword(getAuth(), email, password)
+      .then((res) => writeUser(res.user.uid, email))
+      .then((res) => updateTable('users'))
   }
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(getAuth(), email, password)
       .then((res) => writeUser(res.user.uid, email))
-      .then((res) => updateUsersTable())
+      .then((res) => updateTable('users'))
   }
 
   function logout() {

@@ -6,6 +6,7 @@ import { useAuth } from '../../../Services/Contexts/AuthContext'
 function SignUp() {
     const [isSignUp, setIsSignUp] = useState(false);
     const [isForgotPassword, setIsForgotPassword] = useState(false);
+    
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const passwordConfirmRef = useRef()
@@ -42,6 +43,7 @@ function SignUp() {
             await login(email, password)
             navigate("/")
         } catch(e) {
+            console.log(e)
             setError(`${e.code === 'auth/user-not-found'? 'User not found. Create an account first' : 
                     e.code === 'auth/wrong-password' ? 'Wrong password' : 'Failed to log in. Unknown error. Try again'
                 }`)

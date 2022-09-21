@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { useMemo } from 'react';
+import _ from 'lodash';
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from "react-router-dom";
 import './style.css';
 
-const ListOfChannels = ({ model }) => {
+const ListOfChannels = ({ listOfSubscribedChannels, allChannels }) => {
   const [currentInput, setCurrentInput] = useState('')
   const [showSearching, setShowSearching] = useState(false)
 
@@ -12,17 +12,28 @@ const ListOfChannels = ({ model }) => {
     setShowSearching(e.target.value !== '')
   }
 
-  const getListOfElements = useMemo(() => {
+  const renderedListOfAllChannels = useCallback(() => {
+    console.log('allChannels', allChannels)
+    return getListOfElements(allChannels, currentInput)
+  }, [allChannels, currentInput])
+
+  const renderedListOfSubscribedChannels = useCallback(() => {
+    console.log('listOfSubscribedChannels', listOfSubscribedChannels)
+    return getListOfElements(listOfSubscribedChannels)
+  }, [listOfSubscribedChannels])
+
+  function getListOfElements(list, serachingValue = '') {
+    console.log(list)
     const res = []
     var objKeys = []
 
-    if(currentInput){
-      objKeys = Object.keys(model.channels)
+    if(serachingValue !== '' && !_.isNil(list)){
+      objKeys = Object.keys(list)
       .filter((el) => {
-        return model.channels[el].name.toUpperCase().includes(currentInput.toUpperCase())
+        return list[el].name.toUpperCase().includes(currentInput.toUpperCase())
       })
     } else {
-      objKeys = Object.keys(model.channels)
+      objKeys = Object.keys(list)
     }
 
     objKeys.map((el) => {
@@ -34,16 +45,16 @@ const ListOfChannels = ({ model }) => {
           >
             <div className="listElementLinkContainer">
               <img className='avatar' alt='avatar' src={
-                model.channels[el].photoUrl.length > 0 ? model.channels[el].photoUrl : '/images/noavatar.png'}
+                list[el].photoUrl.length > 0 ? list[el].photoUrl : '/images/noavatar.png'}
               />
-              <h6 className='listElementLinkText ml-2'>{model.channels[el].name}</h6>
+              <h6 className='listElementLinkText ml-2'>{list[el].name}</h6>
             </div>
           </Link>
         </li>
       )
     })
     return <ul className='listOfElementsUl hor-center'>{res}</ul>
-  }, [currentInput, model.channels])
+  };
 
   function closeSearch() {
     setCurrentInput('')
@@ -53,13 +64,13 @@ const ListOfChannels = ({ model }) => {
   return (
     <div className="ListOfChannelsMain scrollbarstyle">
       <input className='searchChannel' type="text" onChange={handleCurrentInputChange} value={currentInput}/>
-      { !showSearching && getListOfElements }
+      { !showSearching && renderedListOfSubscribedChannels() }
       { showSearching && <div className='listOfElementsUl hor-center' >
         <div className="searchNav">
           <h5 className='searchLabel'>Search</h5>
           <button className='closeSearchBtn' onClick={() => closeSearch()}>X</button>
         </div>
-        <ul className='listOfElementsUl hor-center'>{getListOfElements}</ul>
+        <ul className='listOfElementsUl hor-center'>{ renderedListOfAllChannels() }</ul>
       </div> }
     </div>
   )

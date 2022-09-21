@@ -37,12 +37,26 @@ export function DatabaseProvider({ children }) {
     fetchData();
   }, [])
 
-  function updateUsersTable() {
-    getAllTable('users').then((res) => setUsers(res))
+  // function updateUsersTable() {
+  //   getAllTable('users').then((res) => setUsers(res))
+  // }
+
+  function setState(name, res) {
+    if(name === 'channels') {
+      setChannels(res)
+    } else if(name === 'users') {
+      setUsers(res)
+    }
   }
 
-  function updateChannelsTable() {
-    getAllTable('channels').then((res) => setChannels(res))
+  function updateTable(nameOfTable) {
+    return new Promise((resolve) => {
+      getAllTable(nameOfTable)
+        .then((res) => {
+          setState(nameOfTable, res)
+          resolve(res)
+        })
+    })
   }
 
   // function clearDuplicates() {
@@ -60,25 +74,35 @@ export function DatabaseProvider({ children }) {
   }
 
   function write(tableName, id, data) {
-    set(ref(database, tableName + '/' + id), data);
+    return set(ref(database, tableName + '/' + id), data);
   }
   
-  function writeChannel(currentUser, name, description = '', photoUrl = '') {
-    const dateOfCreation = new Date().toString()
-    const idOfChannel = sha256(JSON.stringify(currentUser) + 
-      dateOfCreation + 
-      name);
+  function createChannel(currentUser, name, description = '', photoUrl = '') {
+    return new Promise((resolve, reject) => {
+      updateTable('channels').then(() => {
+        const hasDuplicates = Object.keys(channels).find(key => channels[key].name === name)
 
-    write('channels', idOfChannel, {
-      owner: currentUser.uid,
-      name: name,
-      subscribers: [],
-      dateOfCreation: dateOfCreation,
-      description: description,
-      listOfMessages: [],
-      isChatOrPublic: 'public',
-      photoUrl: photoUrl,
-      inputtedMessage: ''
+        if(_.isNil(hasDuplicates)){
+          const dateOfCreation = new Date().toString()
+          const idOfChannel = sha256(JSON.stringify(currentUser) + 
+            dateOfCreation + 
+            name);
+  
+          write('channels', idOfChannel, {
+            owner: currentUser.uid,
+            name: name,
+            subscribers: [],
+            dateOfCreation: dateOfCreation,
+            description: description,
+            listOfMessages: [],
+            isChatOrPublic: 'public',
+            photoUrl: photoUrl,
+            inputtedMessage: ''
+          }).then(() => resolve(idOfChannel))
+        } else {
+          reject('This name of channel is unavailable')
+        }
+      })
     })
   }
 
@@ -106,12 +130,25 @@ export function DatabaseProvider({ children }) {
   }
 
   function writeUser(userId, email) {
-    write('users', userId, {
-      email: email,
-      listofOwnChanels: [],
-      listOfSubscribedChannels: [],
-      nickname: userId
+    return new Promise((resolve, reject) => {
+      updateTable('users').then(() => {
+        const hasDuplicates = Object.keys(users).forEach(key => users[key].email === email)
+
+        if(hasDuplicates === undefined){
+          write('users', userId, {
+            email: email,
+            listofOwnChanels: [],
+            listOfSubscribedChannels: [],
+            nickname: userId
+          }).then(() => resolve('success'))
+        } else {
+          reject('This email is already used')
+        }
+      })
     })
+
+
+    
   }
 
   function writeUserObj(userId, obj) {
@@ -131,12 +168,12 @@ export function DatabaseProvider({ children }) {
     channels,
     writeUser,
     writeUserObj,
-    writeChannel,
+    createChannel,
     writeChannelObj,
     writeMessage,
     updateNickname,
-    updateChannelsTable,
-    updateUsersTable
+    updateTable,
+    getAllTable
   };
 
   return (
