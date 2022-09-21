@@ -75,10 +75,6 @@ const MainColumn = ({ model, setModel, params }) => {
       return 'no messages in that channel'
     }
 
-    console.log(model)
-    console.log(model.currentChannel)
-    console.log(model.currentUser)
-
     messToRender.forEach((obj, ind) => {
       const isMine = obj.owner === model.currentUser.uid
 

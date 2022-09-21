@@ -1,5 +1,6 @@
 import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types';
+import { useNavigate  } from 'react-router-dom'
 import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap'
 import { useAuth } from '../../../Services/Contexts/AuthContext';
 import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
@@ -8,38 +9,32 @@ import constants from 'src/Services/constants/constants';
 import './style.css';
 import _ from 'lodash';
 
-const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel }) => {
+const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, refreshLocalDB, subscribeToCurrentChannel }) => {
   const [loading, setLoading] = useState(false)
   const [logoPreview, setLogoPreview] = useState(constants.NO_PHOTO_CHOOSEN_PATH)
   const [error, setError] = useState(false)
   const [info, setInfo] = useState(false)
   const { currentUser } = useAuth()
-  const { writeChannel, updateChannelsTable } = useDatabase()
+  const { createChannel, updateTable } = useDatabase()
   const nameRef = useRef()
   const discriptionRef = useRef()
-  // const photoUrlRef = useRef()
-
-  // useEffect(() => {
-  //   setLogoPreview()
-  // }, [])
-  
+  const navigate  = useNavigate()
 
   function handleSubmit(e){
     e.preventDefault()
 
-    function haveDuplicateName(nameOfChannel) {
-      const duplicateObj = Object.keys(model.channels).find(channelID => {
-        return model.channels[channelID].name === nameOfChannel
+    createChannel(currentUser, nameRef.current.value, discriptionRef.current.value, logoPreview)
+      .then((idOfChannel) => {
+        console.log('refresh')
+        refreshLocalDB('channels')
+        setShowCreateChannel(false)
+        navigate('/' + idOfChannel)
+        subscribeToCurrentChannel()
+      }, (error) => {
+        setError(error)
+        setTimeout(() => {setError('')}, 5000)
       })
-
-      return !_.isNil(duplicateObj);
-    }
-
-    if (!haveDuplicateName(nameRef.current.value)) {
-      writeChannel(currentUser, nameRef.current.value, discriptionRef.current.value, logoPreview);
-      updateChannelsTable()
-      setShowCreateChannel(false)
-    }
+  }
 
     // if (passwordRef.current.value !== passwordConfirmRef.current.value){
     //   return setError('Password do not match')
@@ -74,19 +69,14 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel }) 
     // }).finally(() => {
     //   setLoading(false)
     // })
-  }
+  // }
 
   const handleLogoChange = (e) => {
     e.preventDefault()
     
-    // var blobObj = new Blob([atob(e.target.value)], { type: "application/pdf" });
     var url = window.URL.createObjectURL(e.target.value,);
-    console.log(url)
-    // document.getElementById("iframe-target").setAttribute("src", url);
 
     setLogoPreview(url)
-
-    console.log()
   }
 
   return (
