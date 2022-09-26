@@ -24,7 +24,7 @@ const MainColumn = ({ model, users, currentChannelId, channels, currentUser, ref
     const messToRender = model.channels[model.currentChannel.channelId].messageStack;
 
     if(_.isNil(messToRender)){
-      return 'no messages in that channel'
+      return 'no messages in that channel '
     }
 
     messToRender.forEach((obj, ind) => {
