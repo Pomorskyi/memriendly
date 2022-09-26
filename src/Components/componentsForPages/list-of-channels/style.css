@@ -22,14 +22,14 @@
 }
 
 .listElementLink{
-    color: rgb(236, 236, 236) !important;
+    color: var(--font-primary) !important;
     display: block;
     width: 100%;
     height: 100%;
 }
 
 .listElementLink:hover{
-    background-color: rgb(64, 77, 153);
+    background-color: var(--bg-hover-small-elements);
 }
 
 .avatar{
@@ -71,7 +71,7 @@
 }
 
 .subscribedLabel{
-    color: grey;
+    color: var(--font-secondary);
     text-decoration: none;
     display: block;
     font-size: .8rem;

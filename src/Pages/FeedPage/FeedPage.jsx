@@ -94,7 +94,6 @@ const FeedPage = () => {
   }
 
   function refreshLocalDB(name) {
-    setLoading(true);
     const newModel = _.clone(model);
 
     new Promise((resolve) => {
@@ -106,7 +105,6 @@ const FeedPage = () => {
       }
     }).then(() => {
       setModel(newModel);
-      setLoading(false);
     })
   }
 
