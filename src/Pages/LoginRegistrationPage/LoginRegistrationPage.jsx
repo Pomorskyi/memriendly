@@ -1,6 +1,5 @@
 import React from 'react'
 import { Container } from 'react-bootstrap'
-import PropTypes from 'prop-types';
 import './style.css'
 import { SignUp } from '../../Components/componentsForComponents';
 
@@ -13,13 +12,5 @@ const LoginReginstrationPage = ({ model }) => {
     </Container>
   )
 }
-
-LoginReginstrationPage.propTypes = {
-  model: PropTypes.object.isRequired,
-};
-
-LoginReginstrationPage.defaultProps = {
-  model: {},
-};
 
 export default LoginReginstrationPage

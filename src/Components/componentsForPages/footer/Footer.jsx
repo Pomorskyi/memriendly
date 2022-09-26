@@ -1,25 +1,16 @@
 import React from 'react'
-import { Row, Col, Button } from 'react-bootstrap'
-import PropTypes from 'prop-types';
+import { Row, Col } from 'react-bootstrap'
 import './style.css';
 
 const Footer = () => {
 
   return (
-    <Row className='footerMain'>
+    <Row className='footerMain backGroundColorHeaderFooterBlack'>
       <Col>
         SADSD
       </Col>
     </Row>
   )
 }
-
-Footer.propTypes = {
-  handleLogout: PropTypes.func.isRequired,
-};
-
-Footer.defaultProps = {
-  handleLogout: () => {},
-};
 
 export default Footer

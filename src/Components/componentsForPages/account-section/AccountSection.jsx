@@ -1,12 +1,11 @@
 import React from 'react'
 import { Button, Container, Row, Col } from 'react-bootstrap';
-import PropTypes from 'prop-types';
 import './style.css';
 
 const AccountSection = ({ handleShowSettings, handleShowCreateChannel, subscribeToCurrentChannel }) => {
 
   return (
-    <div className='AccountSectionMain'>
+    <div className='AccountSectionContainer'>
       <Container>
         <Row>
           <Col>

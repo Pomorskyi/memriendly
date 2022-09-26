@@ -59,10 +59,6 @@ export function DatabaseProvider({ children }) {
     })
   }
 
-  // function clearDuplicates() {
-  //   set(ref(database, 'channels/127b82dd31714b6d54cd85a82e78ea5914764c202716de1a1c354499aff64f43'), null);
-  // }
-
   // name = { users, channels }
   async function getAllTable(name) {
     return await get(child(dbRef, name))
@@ -111,22 +107,25 @@ export function DatabaseProvider({ children }) {
   }
 
   function writeMessage(channelId, owner, message) {
-    const currentChannel = channels[channelId];
-    const messageStack = (_.isNil(currentChannel.messageStack) ? [] : currentChannel.messageStack)
-    messageStack.push({
-      message: message,
-      owner: owner,
-      datatime: new Date().toString()
+    return new Promise((resolve) => {
+      const currentChannel = channels[channelId];
+      const messageStack = (_.isNil(currentChannel.messageStack) ? [] : currentChannel.messageStack)
+      messageStack.push({
+        message: message,
+        owner: owner,
+        datatime: new Date().toString()
+      })
+
+      const newChannelObj = _.clone(channels[channelId])
+      newChannelObj.messageStack = messageStack
+
+      write('channels', channelId, newChannelObj)
+
+      const newChannels = _.clone(channels)
+      newChannels[channelId] = newChannelObj
+      setChannels(newChannels)
+      resolve()
     })
-
-    const newChannelObj = _.clone(channels[channelId])
-    newChannelObj.messageStack = messageStack
-
-    write('channels', channelId, newChannelObj)
-
-    const newChannels = _.clone(channels)
-    newChannels[channelId] = newChannelObj
-    setChannels(newChannels)
   }
 
   function writeUser(userId, email) {

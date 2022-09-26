@@ -1,59 +1,12 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap'
+import React, { useMemo, useRef, useState } from 'react'
+import { Container, Row, Col, Form} from 'react-bootstrap'
 import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 import _ from 'lodash';
 import './style.css';
 
-const MainColumn = ({ model, setModel, params }) => {
+const MainColumn = ({ model, users, currentChannelId, channels, currentUser, refreshLocalDB }) => {
   const [message, setMessage] = useState('')
   const { writeMessage } = useDatabase()
-
-  // useEffect(() => {
-  //   const lastMes = message
-  //   console.log(message)
-  //   console.log('changedChanged')
-  //   const modelIsNull = _.isNil(model)
-  //   if(!modelIsNull) {
-  //     console.log('s')
-  //     const currentChannelIsNull = _.isNil(model.currentChannel)
-  //     if(!currentChannelIsNull) {
-  //       console.log('e')
-  //       const newModel = _.clone(model);
-  
-  //       const { [params.channelId]: channel } = model.channels
-  //       const newChannel = {
-  //         inputtedMessage: lastMes,
-  //         ...channel
-  //       }
-
-  //       newModel.channels[params.channelId] = newChannel
-
-  //       // newModel.currentChannel.inputtedMessage = message
-  //       setModel(newModel);
-  //       console.log(newModel)
-  //       console.log(model)
-  //     }
-  //   }
-  //   console.log('t')
-  //   setMessage('')
-  // }, [params.channelId])
-
-
-  // useEffect(() => {
-  //   setMessage('')
-  //   const modelIsNull = _.isNil(model)
-  //   if(!modelIsNull) {
-  //     const currentChannelIsNull = _.isNil(model.currentChannel)
-  //     if(!currentChannelIsNull) {
-  //       console.log('f')
-  //       setMessage(model.currentChannel.inputtedMessage)
-  //     }
-  //   }
-  // }, [model.currentChannel])
-
-  // message: message,
-  // owner: owner,
-  // datatime: new Date().toString()
 
   function getUserNickname(uid){
     if(_.isNil(model.users[uid])){
@@ -68,11 +21,10 @@ const MainColumn = ({ model, setModel, params }) => {
       return 'choose chanel first'
     }
     const result = [];
-    console.log(model)
     const messToRender = model.channels[model.currentChannel.channelId].messageStack;
 
     if(_.isNil(messToRender)){
-      return 'no messages in that channel'
+      return 'no messages in that channel '
     }
 
     messToRender.forEach((obj, ind) => {
@@ -82,7 +34,7 @@ const MainColumn = ({ model, setModel, params }) => {
         <Row className='mt-2' key={model.currentChannel.channelId + 'mes' + ind}>
           { isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}
           <Col sm={12} md={10} lg={9} xl={9} xxl={9}>
-            <div className='message'>
+            <div className='message listElementBGColor'>
               <img className='messagAavatar avatar' alt='avatar' src={ 
                 (model && 
                 model.currentChannel && 
@@ -104,7 +56,7 @@ const MainColumn = ({ model, setModel, params }) => {
     })
 
     return result.reverse();
-  }, [model]);
+  }, [model.channels, model.currentChannel]);
 
   function handleMessageChange(e){
     e.preventDefault()
@@ -115,14 +67,15 @@ const MainColumn = ({ model, setModel, params }) => {
   function handleSubmit(e){
     e.preventDefault()
     writeMessage(model.currentChannel.channelId, model.currentUser.uid, message)
-
-    setMessage('')
+      .then(() => {
+        refreshLocalDB('channels');
+        setMessage('')
+      })
   }
 
   //TODO: if(JSON.stringify(model.currentChannel) === null) show 'No chosen Channel'
   return (
-    <div className='MainColumnMain scrollbarstyle'>
-      {/* {JSON.stringify(model.currentChannel)} */}
+    <div className='MainColumnMain scrollbarstyle backGroundColorBlack'>
       <Form onSubmit={handleSubmit} className='inputMessageForm'>
         <Form.Group id="message" className="messageTextArea">
           <textarea
