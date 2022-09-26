@@ -55,7 +55,7 @@ const MyAccountModal = ({ handleClose, show }) => {
   }
 
   return (
-    <Modal show={show} onHide={handleClose} className='modal-lg'>
+    <Modal show={show} onHide={handleClose} className='modal-lg customModal'>
         <Modal.Header closeButton>
           <Modal.Title>Account Settings</Modal.Title>
         </Modal.Header>

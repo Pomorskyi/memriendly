@@ -80,7 +80,7 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
   }
 
   return (
-    <Modal show={show} onHide={handleClose} className='modal-lg'>
+    <Modal show={show} onHide={handleClose} className='modal-lg customModal'>
         <Modal.Header closeButton>
           <Modal.Title>Create channel</Modal.Title>
         </Modal.Header>
