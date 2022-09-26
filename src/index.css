@@ -4,6 +4,7 @@ body {
   font-family: Tahoma, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: rgb(236, 236, 236) !important;
 }
 
 body,
@@ -32,16 +33,49 @@ code {
 .scrollbarstyle::-webkit-scrollbar-track
 {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  background-color: #F5F5F5;
+  background-color: #000000;
 }
 
 .scrollbarstyle::-webkit-scrollbar
 {
   width: 6px;
-  background-color: #F5F5F5;
+  background-color: #000000;
 }
 
 .scrollbarstyle::-webkit-scrollbar-thumb
 {
+  background-color: #F5F5F5;
+}
+
+.scrollbarstyleWhite::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+.scrollbarstyleWhite::-webkit-scrollbar
+{
+  width: 6px;
+  background-color: #F5F5F5;
+}
+
+.scrollbarstyleWhite::-webkit-scrollbar-thumb
+{
   background-color: #000000;
+}
+
+.backGroundColorBlack{
+  background-color: rgb(40, 46, 77);
+}
+
+.backGroundColorSideColumnBlack{
+  background-color: rgb(34, 39, 65);
+}
+
+.backGroundColorHeaderFooterBlack{
+  background-color: rgb(21, 24, 41);
+}
+
+.listElementBGColor{
+  background-color: rgb(54, 64, 116);
 }

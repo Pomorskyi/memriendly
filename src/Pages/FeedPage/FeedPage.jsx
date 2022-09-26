@@ -22,7 +22,7 @@ const FeedPage = () => {
   const [subscribedChannels, setSubscribedChannels] = useState([])
   const [error, setError] = useState('')
   const { currentUser, logout } = useAuth()
-  const { writeChannelObj, writeUserObj, updateTable, getAllTable } = useDatabase()
+  const { writeChannelObj, writeUserObj, updateTable } = useDatabase()
   let params = useParams();
   const navigate = useNavigate()
   const [showSettings, setShowSettings] = useState(false);
@@ -41,6 +41,7 @@ const FeedPage = () => {
     .then(() => {fetchCurrentChannelIntoModel().then(res => newModel.currentChannel = res)})
     .then(() => {setSubscribedChannels(getSubscribedChannels(newModel))})
     .then(() => {
+      navigate('/')
       setModel(newModel)
       setLoading(false);
     })
@@ -60,30 +61,15 @@ const FeedPage = () => {
     }
   }, [params.channelId])
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const newModel = _.clone(model);
-
-  //   new Promise(() => {
-  //     setSubscribedChannels(getSubscribedChannels(newModel))
-  //   }).then(() => {
-  //     setModel(newModel)
-  //     setLoading(false);
-  //   })
-  // }, [model.currentUser])
-
   function getSubscribedChannels(modelObj) {
       if(!_.isNil(modelObj.currentUser)){
         var displayedChannels = {}
         const copy = _.clone(modelObj)
-        // console.log(copy)
         if(copy.users[copy.currentUser.uid].listOfSubscribedChannels){
           copy.users[copy.currentUser.uid].listOfSubscribedChannels.forEach(el => {
-            // console.log(el)
             displayedChannels[el] = copy.channels[el]
           })
         }
-        // console.log(displayedChannels)
         return displayedChannels
       }
   }
@@ -113,20 +99,14 @@ const FeedPage = () => {
 
     new Promise((resolve) => {
       if(name === 'users'){
-        updateTable('users').then((res) => newModel.users = res)
-      } else if(name === 'channels'){
-        console.log(1)
-        updateTable('channels').then((res) => newModel.channels = res)
+        updateTable('users').then((res) => newModel.users = res).then(() => resolve())
         setSubscribedChannels(getSubscribedChannels(newModel))
-        console.log(2)
+      } else if(name === 'channels'){
+        updateTable('channels').then((res) => newModel.channels = res).then(() => resolve())
       }
-      resolve()
     }).then(() => {
-      console.log(3)
-      console.log(newModel)
-      setModel(newModel)
+      setModel(newModel);
       setLoading(false);
-      console.log(4)
     })
   }
 
@@ -170,9 +150,8 @@ const FeedPage = () => {
       
       writeUserObj(model.currentUser.uid, newUser)
     }
-    
-    updateTable('channels')
-    updateTable('users')
+    refreshLocalDB('channels')
+    refreshLocalDB('users')
     
     setLoading(false);
   }, [model, currentUser])
@@ -195,7 +174,7 @@ const FeedPage = () => {
   if(loading || _.isNil(model)) return <p>loading</p>
     else 
   return (
-    <Container className='FeedPageContainer h-100 d-flex flex-column' fluid>
+    <Container className='FeedPageContainer h-100 d-flex flex-column backGroundColorBlack' fluid>
       <MyAccountModal handleClose={handleCloseSettings} model={model} show={showSettings} />
       <CreateChannelModal
         handleClose={handleCloseCreateChannel}
@@ -210,16 +189,17 @@ const FeedPage = () => {
         </Col>
       </Row>
       <Row className='h-80' style={{ height: '89vh' }}>
-        <Col sm={0} md={0} lg={3} xl={3} xxl={2} className='d-none d-lg-block' style={{ height: '100%' }}>
-          <ListOfChannels className='listOfChannels' allChannels={model.channels} listOfSubscribedChannels={subscribedChannels}></ListOfChannels>
+        <Col sm={0} md={0} lg={3} xl={3} xxl={2} className='d-none d-lg-block backGroundColorSideColumnBlack' style={{ height: '100%' }}>
+          <ListOfChannels className='listOfChannels' allChannels={model.channels} listOfSubscribedChannels={subscribedChannels} model={model}></ListOfChannels>
         </Col>
         <Col sm={12} md={8} lg={6} xl={6} xxl={8} style={{ height: '100%' }}>
-          <MainColumn className='mainColumn' model={model} setModel={setModel} params={params} ></MainColumn>
+          <MainColumn className='mainColumn' model={model} setModel={setModel} params={params} refreshLocalDB={refreshLocalDB}></MainColumn>
         </Col>
-        <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block'>
+        <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block backGroundColorSideColumnBlack'>
           <AccountSection 
             handleShowSettings={handleShowSettings} 
             handleShowCreateChannel={handleShowCreateChannel}
+            subscribeToCurrentChannel={subscribeToCurrentChannel}
             model={model} 
             className='accountSection' />
         </Col>

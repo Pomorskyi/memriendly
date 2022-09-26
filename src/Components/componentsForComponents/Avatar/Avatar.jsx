@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col, Form, Button, Alert } from 'react-bootstrap'
 import { useAuth } from '../../../Services/Contexts/AuthContext'
 import _ from 'lodash'
-import PropTypes from 'prop-types'
 import './style.css';
 
 const Avatar = () => {

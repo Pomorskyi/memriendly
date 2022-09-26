@@ -1,5 +1,4 @@
 .MainColumnMain{
-    background-color: rgb(165, 228, 183);
     width: 100%;
     height: 100%;
     overflow-x: hidden;
@@ -12,7 +11,6 @@
     min-height: 89%;
 }
 .inputMessageForm{
-    border: 1px solid rgb(230, 73, 73);
     flex-direction: row;
     display: flex;
     min-height: fit-content;
@@ -45,7 +43,6 @@
     border: none;
 }
 .message{
-    background-color: rgb(174, 110, 110);
     min-height: 2rem;
     border-radius: .8rem;
     padding: .2rem;

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from "react-router-dom";
 import './style.css';
 
-const ListOfChannels = ({ listOfSubscribedChannels, allChannels }) => {
+const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
   const [currentInput, setCurrentInput] = useState('')
   const [showSearching, setShowSearching] = useState(false)
 
@@ -13,17 +13,14 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels }) => {
   }
 
   const renderedListOfAllChannels = useCallback(() => {
-    console.log('allChannels', allChannels)
-    return getListOfElements(allChannels, currentInput)
+    return getListOfElements(allChannels, currentInput, true)
   }, [allChannels, currentInput])
 
   const renderedListOfSubscribedChannels = useCallback(() => {
-    console.log('listOfSubscribedChannels', listOfSubscribedChannels)
     return getListOfElements(listOfSubscribedChannels)
   }, [listOfSubscribedChannels])
 
-  function getListOfElements(list, serachingValue = '') {
-    console.log(list)
+  function getListOfElements(list, serachingValue = '', showSubscribing = false) {
     const res = []
     var objKeys = []
 
@@ -38,7 +35,7 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels }) => {
 
     objKeys.map((el) => {
       res.push(
-        <li className='listElement mb-2' key={el}>
+        <li className='listElement mb-2 listElementBGColor' key={el}>
           <Link
             className='listElementLink'
             to={'/channel/' + el}
@@ -48,6 +45,10 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels }) => {
                 list[el].photoUrl.length > 0 ? list[el].photoUrl : '/images/noavatar.png'}
               />
               <h6 className='listElementLinkText ml-2'>{list[el].name}</h6>
+              {showSubscribing && model.users[model.currentUser.uid].listOfSubscribedChannels &&
+                model.users[model.currentUser.uid].listOfSubscribedChannels.includes(el) &&
+                <h6 className='subscribedLabel ml-2'>Subscribed</h6>
+              }
             </div>
           </Link>
         </li>
