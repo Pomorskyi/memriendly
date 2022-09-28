@@ -1,13 +1,10 @@
-import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
-import PropTypes from 'prop-types';
+import React, { useState, useRef } from 'react'
 import { useNavigate  } from 'react-router-dom'
 import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap'
 import { useAuth } from '../../../Services/Contexts/AuthContext';
 import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
-import { Avatar } from '../../componentsForComponents';
 import constants from 'src/Services/constants/constants';
 import './style.css';
-import _ from 'lodash';
 
 const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, refreshLocalDB, subscribeToCurrentChannel }) => {
   const [loading, setLoading] = useState(false)
@@ -15,61 +12,30 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
   const [error, setError] = useState(false)
   const [info, setInfo] = useState(false)
   const { currentUser } = useAuth()
-  const { createChannel, updateTable } = useDatabase()
+  const { createChannel } = useDatabase()
   const nameRef = useRef()
   const discriptionRef = useRef()
   const navigate  = useNavigate()
 
   function handleSubmit(e){
     e.preventDefault()
+    setLoading(true);
 
     createChannel(currentUser, nameRef.current.value, discriptionRef.current.value, logoPreview)
       .then((idOfChannel) => {
         console.log('refresh')
-        refreshLocalDB('channels')
-        setShowCreateChannel(false)
-        navigate('/' + idOfChannel)
-        subscribeToCurrentChannel()
+        refreshLocalDB('channels').then(() => {
+          setShowCreateChannel(false)
+          subscribeToCurrentChannel().then(() => {
+            navigate('/' + idOfChannel)
+          })
+        })
       }, (error) => {
         setError(error)
         setTimeout(() => {setError('')}, 5000)
       })
+      .finally(() => setLoading(false));
   }
-
-    // if (passwordRef.current.value !== passwordConfirmRef.current.value){
-    //   return setError('Password do not match')
-    // }
-
-    // if (nicknameRef.current.value === '' &&
-    //     passwordRef.current.value === '' &&
-    //     currentUser.email === emailRef.current.value){
-    //   setInfo('You need to change fields below to update profile')
-    //   return setTimeout(() => {setInfo('')}, 5000)
-    // }
-
-    // const promises = []
-    // setLoading(true)
-    // setError('')
-    // if (emailRef.current.value !== currentUser.email){
-    //   promises.push(updateEmailCustom(emailRef.current.value))
-    // }
-    // if (passwordRef.current.value){
-    //   promises.push(updatePasswordCustom(passwordRef.current.value))
-    // }
-    // if (nicknameRef.current.value){
-    //   console.log(currentUser)
-    //   promises.push(updateNickname(currentUser.uid, passwordRef.current.value))
-    // }
-
-    // Promise.all(promises).then(() => {
-    //   setInfo('Profile updated succesfully')
-    //   setTimeout(() => {setInfo('')}, 5000)
-    // }).catch(() => {
-    //   setError('Failed to update account')
-    // }).finally(() => {
-    //   setLoading(false)
-    // })
-  // }
 
   const handleLogoChange = (e) => {
     e.preventDefault()
@@ -91,6 +57,7 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
                 {error && <Alert variant="danger">{error}</Alert>}
                 {info && <Alert variant="primary">{info}</Alert>}
                 <Col sm={12} lg={6}>
+                  <h2>Logo</h2>
                   <Row>
                     <Col sm={6}>
                       <img src={logoPreview} className='avatar w-100 m-1 p-2' alt='logo' />
@@ -104,8 +71,8 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
                 </Col>
                 <Col sm={12} lg={6}>
                   <Form.Group id="name">
-                      <Form.Label>Name</Form.Label>
-                      <Form.Control type="nickname" ref={nameRef} placeholder=""/>
+                    <h2>Name</h2>
+                    <Form.Control type="nickname" ref={nameRef} placeholder=""/>
                   </Form.Group>
                 </Col>
                 <Col sm={12}>
@@ -114,7 +81,7 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
                       <Form.Control type="nickname" ref={discriptionRef} placeholder=""/>
                   </Form.Group>
                 </Col>
-                <Button disabled={loading} className="w-100 mt-4" type="submit">
+                <Button disabled={loading} className="w-100 mt-4 customOperationalButton" type="submit">
                   Create channel
                 </Button>
               </Row>
