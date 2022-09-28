@@ -29,11 +29,16 @@ const MainColumn = ({ model, users, currentChannelId, channels, currentUser, ref
 
     messToRender.forEach((obj, ind) => {
       const isMine = obj.owner === model.currentUser.uid
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+
+      const dataStyles = [isMine ? 'messageDataAlignRight' : 'messageDataAlignLeft']
+      const messageStyles = ['messageOuterContainer', 
+        isMine ? 'messageOuterContainerAlignRight' : 'messageOuterContainerAlignLeft']
 
       result.push(
         <Row className='mt-2' key={model.currentChannel.channelId + 'mes' + ind}>
           { isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}
-          <Col sm={12} md={10} lg={9} xl={9} xxl={9}>
+          <Col sm={12} md={10} lg={9} xl={9} xxl={9} className={messageStyles}>
             <div className='message listElementBGColor'>
               <img className='messagAavatar avatar' alt='avatar' src={ 
                 (model && 
@@ -46,8 +51,8 @@ const MainColumn = ({ model, users, currentChannelId, channels, currentUser, ref
                 {obj.message}
               </div>
             </div>
-            <div className='messageData'>
-              {obj.datatime}
+            <div className={dataStyles}>
+              {new Date(obj.datatime).toLocaleDateString('en-US', options)}
             </div>
           </Col>
           { !isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}

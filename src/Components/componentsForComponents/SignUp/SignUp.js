@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { useNavigate  } from 'react-router-dom'
 import { useAuth } from '../../../Services/Contexts/AuthContext'
+import './style.css'
 
 function SignUp() {
     const [isSignUp, setIsSignUp] = useState(false);
@@ -87,7 +88,7 @@ function SignUp() {
   return (
     <>
     {/*TODO: Change card for new styles from Telegram own messages */}
-        <Card className="w-100">
+        <Card className="w-100 customSignUp">
             {isForgotPassword && 
                 <Card.Body>
                 <h2 className="text-center mb-4">Password Reset</h2>
@@ -103,7 +104,7 @@ function SignUp() {
                     </Button>
                 </Form>
                 <div className="w-100 text-center mt-2">
-                    <button onClick={() => {setIsForgotPassword(false); setInfo('')}}>Log In</button>
+                    <button className='changeVariationBtn' onClick={() => {setIsForgotPassword(false); setInfo('')}}>Log In</button>
                 </div>
             </Card.Body>
             }
@@ -116,11 +117,11 @@ function SignUp() {
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" value={email} onChange={handleEmailChange} required />
                         </Form.Group>
-                        <Form.Group id="password">
+                        <Form.Group id="password" className='mt-2'>
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" value={password} onChange={handlePasswordChange} required />
                         </Form.Group>
-                        <Form.Group id="password-confirmation">
+                        <Form.Group id="password-confirmation" className='mt-2'>
                             <Form.Label>Password Confirmation</Form.Label>
                             <Form.Control type="password" ref={passwordConfirmRef} required />
                         </Form.Group>
@@ -129,7 +130,7 @@ function SignUp() {
                         </Button>
                     </Form>
                     <div className="w-100 text-center mt-2">
-                        Already have an account? <button onClick={() => {handleToggleState(true)}}>Log In</button>
+                        Already have an account? <button className='changeVariationBtn' onClick={() => {handleToggleState(true)}}>Log In</button>
                     </div>
                 </Card.Body>
             }
@@ -142,7 +143,7 @@ function SignUp() {
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" value={email} onChange={handleEmailChange} required />
                         </Form.Group>
-                        <Form.Group id="password">
+                        <Form.Group id="password" className='mt-2'>
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" value={password} onChange={handlePasswordChange} required />
                         </Form.Group>
@@ -151,10 +152,10 @@ function SignUp() {
                         </Button>
                     </Form>
                     <div className="w-100 text-center mt-2">
-                        <button onClick={() => {setIsForgotPassword(true); setInfo('')}}>Forgot password?</button>
+                        <button className='changeVariationBtn' onClick={() => {setIsForgotPassword(true); setInfo('')}}>Forgot password?</button>
                     </div>
                     <div className="w-100 text-center mt-2">
-                        Need an account? <button onClick={() => {handleToggleState(false)}}>Sign Up</button>
+                        Need an account? <button className='changeVariationBtn' onClick={() => {handleToggleState(false)}}>Sign Up</button>
                     </div>
                 </Card.Body>
             }

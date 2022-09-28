@@ -66,7 +66,7 @@ const MyAccountModal = ({ handleClose, show }) => {
                 <Avatar currentUser={currentUser} />
               </Col>
               <Col sm={12} lg={6}>
-                <h1 className="display-6">Profile</h1>
+                <h2>Profile</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
                 {info && <Alert variant="primary">{info}</Alert>}
                 <Form onSubmit={handleSubmit}>

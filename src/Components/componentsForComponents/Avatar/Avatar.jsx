@@ -30,7 +30,7 @@ const Avatar = () => {
 
   return (
     <Row>
-      <h1 className="display-6">Avatar</h1>
+      <h2>Avatar</h2>
         {error && <Alert variant="danger">{error}</Alert>}
         {info && <Alert variant="primary">{info}</Alert>}
       <Col sm={6}>

@@ -12,6 +12,14 @@
 
   --font-primary: rgb(49, 49, 49);
   --font-secondary: rgb(71, 71, 71);
+
+  /* signup */
+  --light: hsl(0, 0%, 15%);
+  --border-color: hsla(0, 0%, 100%, .2);
+  --global-background: hsl(220, 25%, 10%);
+  --background: linear-gradient(to right, hsl(272, 26%, 61%), hsl(306, 58%, 78%));
+  --shadow-1: rgba(191, 64, 180, 0.329);
+  --shadow-2: rgba(139, 9, 89, 0.445);
 }
 
 [data-theme="dark"] {
@@ -20,7 +28,7 @@
   --bg-color-header-footer: rgb(21, 24, 41);
   --bg-color-small-elements: rgb(54, 64, 116);
   --bg-hover-small-elements: rgb(64, 77, 153);
-  --bg-operational-btn: #189925;
+  --bg-operational-btn: #0d6efd;
   --bg-modal: #282525;
   
   --slider: #F5F5F5;
@@ -28,11 +36,35 @@
 
   --font-primary: rgb(236, 236, 236);
   --font-secondary: rgb(149, 149, 149);
+
+/* signup */
+  --light: hsl(220, 50%, 90%);
+  --border-color: hsla(0, 0%, 100%, .2);
+  --global-background: hsl(220, 25%, 10%);
+  --background: linear-gradient(to right, hsl(210, 30%, 20%), hsl(255, 30%, 25%));
+  --shadow-1: hsla(236, 50%, 50%, .3);
+  --shadow-2: hsla(236, 50%, 50%, .4);
+}
+
+.customSignUp {
+  border: none;
+  background-color: transparent !important;
+}
+.customSignUp > .card-body {
+  color: var(--light);
+  background: var(--background);
+  box-shadow: var(--m-shadow, .4rem .4rem 10.2rem .2rem) var(--shadow-1);
+  border-radius: 2rem;
+}
+
+.LoginRegistrationPageContainer{
+  background: var(--global-background);
 }
 
 .customModal > .modal-dialog > .modal-content{
-  background-color: var(--bg-modal) !important;
-  color: var(--font-primary) !important;
+  background: var(--background);
+  box-shadow: var(--m-shadow, .4rem .4rem 10.2rem .2rem) var(--shadow-1);
+  color: var(--light) !important;
 }
 
 .customOperationalButton{
@@ -49,12 +81,15 @@ body {
   color: var(--font-primary) !important;
 }
 
+* {
+  transition: color .05s ease-in-out,
+    background-color .05s ease-in-out,
+    border-color .05s ease-in-out,
+    box-shadow .05s ease-in-out;
+}
+
 body,
 html {
-  transition: color .15s ease-in-out,
-    background-color .15s ease-in-out,
-    border-color .15s ease-in-out,
-    box-shadow .15s ease-in-out;
   height: 100%;
 }
 
@@ -124,4 +159,15 @@ code {
 
 .listElementBGColor{
   background-color: var(--bg-color-small-elements);
+}
+
+.changeVariationBtn{
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
+  color: hsl(220, 50%, 90%);
+}
+
+.changeVariationBtn:hover{
+  color: hsl(221, 52%, 65%);
 }
