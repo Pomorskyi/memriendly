@@ -13,6 +13,9 @@
   --font-primary: rgb(49, 49, 49);
   --font-secondary: rgb(71, 71, 71);
 
+  /* loading */
+  --loading-background: rgba(179, 179, 179, 0.712);
+
   /* signup */
   --light: hsl(0, 0%, 15%);
   --border-color: hsla(0, 0%, 100%, .2);
@@ -36,6 +39,9 @@
 
   --font-primary: rgb(236, 236, 236);
   --font-secondary: rgb(149, 149, 149);
+
+  /* loading */
+  --loading-background: rgba(69, 69, 69, 0.712);
 
 /* signup */
   --light: hsl(220, 50%, 90%);
@@ -170,4 +176,8 @@ code {
 
 .changeVariationBtn:hover{
   color: hsl(221, 52%, 65%);
+}
+
+.loadingBackground{
+  background-color: var(--loading-background);
 }
