@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import { useNavigate  } from 'react-router-dom'
 import {
@@ -13,6 +13,7 @@ import { useDatabase } from '../../Services/Contexts/DatabaseContext';
 import { useParams } from "react-router-dom";
 import MyAccountModal from '../../Components/Modals/MyAccountModal/MyAccountModal';
 import CreateChannelModal from 'src/Components/Modals/CreateChannelModal/CreateChannelModal';
+import LoadingSpinner from 'src/Components/componentsForPages/loadingSpinner/LoadingSpinner';
 import _ from 'lodash';
 import './style.css'
 
@@ -118,22 +119,68 @@ const FeedPage = () => {
     setShowCreateChannel(false);
   }
 
-  const subscribeToCurrentChannel = useCallback(() => {
+  const unSubscribeToCurrentChannel = useCallback(() => {
     return new Promise((resolve) => {
-      setLoading(true);
-
       if(_.isNil(model.currentChannel)){
         return null
       }
 
-      if (_.isNil(model.currentChannel.subscribers) || 
-          !model.currentChannel.subscribers.includes(model.currentUser.uid)){
+      if(_.isNil(model.channels[params.channelId]) 
+          || _.isNil(model.channels[params.channelId].subscribers)
+          || _.isNil(model.users[model.currentUser.uid].listOfSubscribedChannels)){
+        setLoading(false);
+        console.log('u r not suscribed to cur channel')
+        return null
+      }
+
+      setLoading(true);
+      if (!_.isNil(model.channels[params.channelId].subscribers) && 
+          model.channels[params.channelId].subscribers.includes(model.currentUser.uid)){
+        const newChannel = _.clone(model.channels[params.channelId]);
+
+        newChannel.subscribers.splice(newChannel.subscribers.findIndex(el => 
+          el === model.currentUser.uid
+        ), 1);
+      
+        writeChannelObj(params.channelId, newChannel)
+      }
+
+      if (!_.isNil(model.users[model.currentUser.uid].listOfSubscribedChannels) && 
+          model.users[model.currentUser.uid].listOfSubscribedChannels.includes(params.channelId)){
+        const newUser = _.clone(model.users[model.currentUser.uid]);
+
+        newUser.listOfSubscribedChannels.splice(newUser.listOfSubscribedChannels.findIndex(el => 
+          el === params.channelId
+        ), 1);
+
+        writeUserObj(model.currentUser.uid, newUser)
+      }
+
+      Promise.all([refreshLocalDB('channels'), refreshLocalDB('users')]).then(() => {
+        setLoading(false);
+        resolve()
+      })
+    })
+  }, [model, params.channelId])
+
+  const subscribeToCurrentChannel = useCallback(() => {
+    return new Promise((resolve) => {
+      if(_.isNil(model.currentChannel)){
+        return null
+      }
+
+      if(_.isNil(model.channels[model.currentChannel.channelId])){
+        return null
+      }
+
+      setLoading(true);
+      if (_.isNil(model.channels[model.currentChannel.channelId].subscribers) || 
+          !model.channels[model.currentChannel.channelId].subscribers.includes(model.currentUser.uid)){
         const newChannel = _.clone(model.channels[model.currentChannel.channelId]);
         if(newChannel.subscribers) {
           newChannel.subscribers.push(model.currentUser.uid)
         } else {
-          newChannel.subscribers = []
-          newChannel.subscribers.push(model.currentUser.uid)
+          newChannel.subscribers = [model.currentUser.uid]
         }
       
         writeChannelObj(model.currentChannel.channelId, newChannel)
@@ -145,8 +192,7 @@ const FeedPage = () => {
         if(newUser.listOfSubscribedChannels) {
           newUser.listOfSubscribedChannels.push(model.currentChannel.channelId)
         } else {
-          newUser.listOfSubscribedChannels = []
-          newUser.listOfSubscribedChannels.push(model.currentChannel.channelId)
+          newUser.listOfSubscribedChannels = [model.currentChannel.channelId]
         }
 
         writeUserObj(model.currentUser.uid, newUser)
@@ -157,7 +203,7 @@ const FeedPage = () => {
         resolve()
       })
     })
-  }, [model, currentUser])
+  }, [model])
 
   const handleShowSettings = () => setShowSettings(true);
 
@@ -174,10 +220,9 @@ const FeedPage = () => {
      }
   }
 
-  if(loading || _.isNil(model)) return <p>loading</p>
-    else 
   return (
     <Container className='FeedPageContainer h-100 d-flex flex-column backGroundColorBlack' fluid>
+      <LoadingSpinner show={loading || _.isNil(model)} />
       <MyAccountModal handleClose={handleCloseSettings} model={model} show={showSettings} />
       <CreateChannelModal
         handleClose={handleCloseCreateChannel}
@@ -203,6 +248,7 @@ const FeedPage = () => {
             handleShowSettings={handleShowSettings} 
             handleShowCreateChannel={handleShowCreateChannel}
             subscribeToCurrentChannel={subscribeToCurrentChannel}
+            unSubscribeToCurrentChannel={unSubscribeToCurrentChannel}
             model={model} 
             className='accountSection' />
         </Col>

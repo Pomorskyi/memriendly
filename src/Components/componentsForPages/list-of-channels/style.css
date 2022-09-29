@@ -26,6 +26,7 @@
     display: block;
     width: 100%;
     height: 100%;
+    text-decoration: none!important;
 }
 
 .listElementLink:hover{
@@ -51,7 +52,7 @@
     margin-bottom: 0;
     width: auto;
     word-wrap: break-word;
-    word-break: break-all;
+    word-break: break-all !important;
 }
 
 .searchChannel{

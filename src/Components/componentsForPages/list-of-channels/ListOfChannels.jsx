@@ -33,6 +33,21 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
       objKeys = Object.keys(list)
     }
 
+    function getSubscribedLabel (el) {
+      var res = ''
+      const isSubscribed = showSubscribing && model.users[model.currentUser.uid].listOfSubscribedChannels &&
+        model.users[model.currentUser.uid].listOfSubscribedChannels.includes(el)
+      const numOfSubscribers = model.channels[el].subscribers ? model.channels[el].subscribers.length : 0
+
+      if(isSubscribed){
+        res = 'Subscribed (' + numOfSubscribers + ' followers)'
+      } else {
+        res = numOfSubscribers + ' followers'
+      }
+
+      return res
+    }
+
     objKeys.map((el) => {
       res.push(
         <li className='listElement mb-2 listElementBGColor' key={el}>
@@ -45,10 +60,7 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
                 list[el].photoUrl.length > 0 ? list[el].photoUrl : '/images/noavatar.png'}
               />
               <h6 className='listElementLinkText ml-2'>{list[el].name}</h6>
-              {showSubscribing && model.users[model.currentUser.uid].listOfSubscribedChannels &&
-                model.users[model.currentUser.uid].listOfSubscribedChannels.includes(el) &&
-                <h6 className='subscribedLabel ml-2'>Subscribed</h6>
-              }
+              <h6 className='subscribedLabel ml-2'>{getSubscribedLabel(el)}</h6>
             </div>
           </Link>
         </li>
