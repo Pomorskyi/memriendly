@@ -103,7 +103,11 @@ export function DatabaseProvider({ children }) {
   }
 
   function writeChannelObj(id, obj) {
-    write('channels', id, obj)
+    return new Promise((resolve) => {
+      write('channels', id, obj).then(() => {
+        resolve()
+      })
+    })
   }
 
   function writeMessage(channelId, owner, message) {
@@ -151,7 +155,11 @@ export function DatabaseProvider({ children }) {
   }
 
   function writeUserObj(userId, obj) {
-    write('users', userId, obj)
+    return new Promise((resolve) => {
+      write('users', userId, obj).then(() => {
+        resolve()
+      })
+    })
   }
 
   function updateNickname(userId, nickname) {
