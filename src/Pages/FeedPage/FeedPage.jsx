@@ -63,16 +63,16 @@ const FeedPage = () => {
   }, [params.channelId])
 
   function getSubscribedChannels(modelObj) {
-      if(!_.isNil(modelObj.currentUser)){
-        var displayedChannels = {}
-        const copy = _.clone(modelObj)
-        if(copy.users[copy.currentUser.uid].listOfSubscribedChannels){
-          copy.users[copy.currentUser.uid].listOfSubscribedChannels.forEach(el => {
-            displayedChannels[el] = copy.channels[el]
-          })
-        }
-        return displayedChannels
+    if(!_.isNil(modelObj.currentUser)){
+      var displayedChannels = {}
+      const copy = _.clone(modelObj)
+      if(copy.users[copy.currentUser.uid].listOfSubscribedChannels){
+        copy.users[copy.currentUser.uid].listOfSubscribedChannels.forEach(el => {
+          displayedChannels[el] = copy.channels[el]
+        })
       }
+      return displayedChannels
+    }
   }
 
   function fetchCurrentChannelIntoModel(newModel) {
@@ -99,8 +99,10 @@ const FeedPage = () => {
       const newModel = _.clone(model);
       new Promise((resolve2) => {
         if(name === 'users'){
-          setSubscribedChannels(getSubscribedChannels(newModel))
-          updateTable('users').then((res) => newModel.users = res).then(() => resolve2())
+          updateTable('users').then((res) => {
+            newModel.users = res;
+            // setSubscribedChannels(getSubscribedChannels(newModel))
+          }).then(() => resolve2())
         } else if(name === 'channels'){
           updateTable('channels').then((res) => newModel.channels = res).then(() => resolve2())
         }
@@ -165,42 +167,50 @@ const FeedPage = () => {
 
   const subscribeToCurrentChannel = useCallback(() => {
     return new Promise((resolve) => {
-      if(_.isNil(model.currentChannel)){
-        return null
-      }
-
-      if(_.isNil(model.channels[model.currentChannel.channelId])){
-        return null
-      }
-
-      setLoading(true);
-      if (_.isNil(model.channels[model.currentChannel.channelId].subscribers) || 
-          !model.channels[model.currentChannel.channelId].subscribers.includes(model.currentUser.uid)){
-        const newChannel = _.clone(model.channels[model.currentChannel.channelId]);
-        if(newChannel.subscribers) {
-          newChannel.subscribers.push(model.currentUser.uid)
-        } else {
-          newChannel.subscribers = [model.currentUser.uid]
+      new Promise((innerResolve) => {
+        if(_.isNil(model.currentChannel)){
+          return null
         }
-      
-        writeChannelObj(model.currentChannel.channelId, newChannel)
-      }
-
-      if (_.isNil(model.users[model.currentUser.uid].listOfSubscribedChannels) || 
-        !model.users[model.currentUser.uid].listOfSubscribedChannels.includes(model.currentChannel.channelId)){
-        const newUser = _.clone(model.users[model.currentUser.uid]);
-        if(newUser.listOfSubscribedChannels) {
-          newUser.listOfSubscribedChannels.push(model.currentChannel.channelId)
-        } else {
-          newUser.listOfSubscribedChannels = [model.currentChannel.channelId]
+  
+        if(_.isNil(model.channels[model.currentChannel.channelId])){
+          return null
+        }
+  
+        const promises = []
+        setLoading(true);
+        if (_.isNil(model.channels[model.currentChannel.channelId].subscribers) || 
+            !model.channels[model.currentChannel.channelId].subscribers.includes(model.currentUser.uid)){
+          const newChannel = _.clone(model.channels[model.currentChannel.channelId]);
+          if(newChannel.subscribers) {
+            newChannel.subscribers.push(model.currentUser.uid)
+          } else {
+            newChannel.subscribers = [model.currentUser.uid]
+          }
+        
+          promises.push(writeChannelObj(model.currentChannel.channelId, newChannel))
+        }
+  
+        if (_.isNil(model.users[model.currentUser.uid].listOfSubscribedChannels) || 
+          !model.users[model.currentUser.uid].listOfSubscribedChannels.includes(model.currentChannel.channelId)){
+          const newUser = _.clone(model.users[model.currentUser.uid]);
+          if(newUser.listOfSubscribedChannels) {
+            newUser.listOfSubscribedChannels.push(model.currentChannel.channelId)
+          } else {
+            newUser.listOfSubscribedChannels = [model.currentChannel.channelId]
+          }
+  
+          promises.push(writeUserObj(model.currentUser.uid, newUser))
         }
 
-        writeUserObj(model.currentUser.uid, newUser)
-      }
-
-      Promise.all([refreshLocalDB('channels'), refreshLocalDB('users')]).then(() => {
-        setLoading(false);
-        resolve()
+        Promise.all(promises).then(() => {
+          innerResolve()
+        })
+      }).then(() => {
+        Promise.all([refreshLocalDB('channels'), refreshLocalDB('users')]).then(() => {
+          setSubscribedChannels(getSubscribedChannels(model))
+          setLoading(false);
+          resolve()
+        })
       })
     })
   }, [model])
