@@ -13,14 +13,14 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
   }
 
   const renderedListOfAllChannels = useCallback(() => {
-    return getListOfElements(allChannels, currentInput, true)
+    return getListOfElements(allChannels, currentInput, true, true)
   }, [allChannels, currentInput])
 
   const renderedListOfSubscribedChannels = useCallback(() => {
     return getListOfElements(listOfSubscribedChannels)
   }, [listOfSubscribedChannels])
 
-  function getListOfElements(list, serachingValue = '', showSubscribing = false) {
+  function getListOfElements(list, serachingValue = '', showSubscribing = false, showFollowers = false) {
     const res = []
     var objKeys = []
 
@@ -33,6 +33,9 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
       objKeys = Object.keys(list)
     }
 
+    console.log(model)
+    console.log(list)
+
     function getSubscribedLabel (el) {
       var res = ''
       const isSubscribed = showSubscribing && model.users[model.currentUser.uid].listOfSubscribedChannels &&
@@ -40,9 +43,9 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
       const numOfSubscribers = model.channels[el].subscribers ? model.channels[el].subscribers.length : 0
 
       if(isSubscribed){
-        res = 'Subscribed (' + numOfSubscribers + ' followers)'
+        res = 'Subscribed '.concat(showFollowers ? '(' + numOfSubscribers + ' followers)' : '')
       } else {
-        res = numOfSubscribers + ' followers'
+        res = showFollowers ? numOfSubscribers + ' followers' : ''
       }
 
       return res

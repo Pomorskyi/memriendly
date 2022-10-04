@@ -65,10 +65,9 @@ const FeedPage = () => {
   function getSubscribedChannels(modelObj) {
     if(!_.isNil(modelObj.currentUser)){
       var displayedChannels = {}
-      const copy = _.clone(modelObj)
-      if(copy.users[copy.currentUser.uid].listOfSubscribedChannels){
-        copy.users[copy.currentUser.uid].listOfSubscribedChannels.forEach(el => {
-          displayedChannels[el] = copy.channels[el]
+      if(modelObj.users[modelObj.currentUser.uid].listOfSubscribedChannels){
+        modelObj.users[modelObj.currentUser.uid].listOfSubscribedChannels.forEach(el => {
+          displayedChannels[el] = modelObj.channels[el]
         })
       }
       return displayedChannels
@@ -96,17 +95,20 @@ const FeedPage = () => {
 
   function refreshLocalDB(name) {
     return new Promise((resolve1) => {
-      const newModel = _.clone(model);
       new Promise((resolve2) => {
+        const newModel = _.clone(model);
         if(name === 'users'){
           updateTable('users').then((res) => {
             newModel.users = res;
-            // setSubscribedChannels(getSubscribedChannels(newModel))
-          }).then(() => resolve2())
+            setSubscribedChannels(getSubscribedChannels(newModel))
+          })
         } else if(name === 'channels'){
-          updateTable('channels').then((res) => newModel.channels = res).then(() => resolve2())
+          updateTable('channels').then((res) => {
+            newModel.channels = res
+          })
         }
-      }).then(() => {
+        resolve2(newModel)
+      }).then((newModel) => {
         setModel(newModel);
         resolve1();
       })
@@ -207,7 +209,6 @@ const FeedPage = () => {
         })
       }).then(() => {
         Promise.all([refreshLocalDB('channels'), refreshLocalDB('users')]).then(() => {
-          setSubscribedChannels(getSubscribedChannels(model))
           setLoading(false);
           resolve()
         })
@@ -248,7 +249,11 @@ const FeedPage = () => {
       </Row>
       <Row className='h-80' style={{ height: '89vh' }}>
         <Col sm={0} md={0} lg={3} xl={3} xxl={2} className='d-none d-lg-block backGroundColorSideColumnBlack' style={{ height: '100%' }}>
-          <ListOfChannels className='listOfChannels' allChannels={model.channels} listOfSubscribedChannels={subscribedChannels} model={model}></ListOfChannels>
+          <ListOfChannels
+            className='listOfChannels'
+            allChannels={model.channels}
+            listOfSubscribedChannels={subscribedChannels}
+            model={model}></ListOfChannels>
         </Col>
         <Col sm={12} md={8} lg={6} xl={6} xxl={8} style={{ height: '100%' }}>
           <MainColumn className='mainColumn' model={model} setModel={setModel} params={params} refreshLocalDB={refreshLocalDB}></MainColumn>
