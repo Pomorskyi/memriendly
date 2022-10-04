@@ -149,9 +149,6 @@ export function DatabaseProvider({ children }) {
         }
       })
     })
-
-
-    
   }
 
   function writeUserObj(userId, obj) {
