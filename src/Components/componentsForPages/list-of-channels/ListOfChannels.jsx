@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Link } from "react-router-dom";
 import './style.css';
 

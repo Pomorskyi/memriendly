@@ -16,14 +16,6 @@ export function DatabaseProvider({ children }) {
   const [channels, setChannels] = useState([])
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   setUsers(getAllTable('users'))
-  // }, [getAllTable('users')])
-
-  // useEffect(() => {
-  //   setChannels(getAllTable('channels'))
-  // }, [getAllTable('channels')])
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,10 +28,6 @@ export function DatabaseProvider({ children }) {
 
     fetchData();
   }, [])
-
-  // function updateUsersTable() {
-  //   getAllTable('users').then((res) => setUsers(res))
-  // }
 
   function setState(name, res) {
     if(name === 'channels') {

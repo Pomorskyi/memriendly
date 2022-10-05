@@ -1,10 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Container, Row, Col, Form} from 'react-bootstrap'
 import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 import _ from 'lodash';
 import './style.css';
 
-const MainColumn = ({ model, users, currentChannelId, channels, currentUser, refreshLocalDB }) => {
+const MainColumn = ({ model, refreshLocalDB }) => {
   const [message, setMessage] = useState('')
   const { writeMessage } = useDatabase()
 
