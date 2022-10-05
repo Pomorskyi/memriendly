@@ -1,7 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { auth } from './firebase';
 import { useDatabase } from '../../Services/Contexts/DatabaseContext';
-import { DatabaseProvider } from '../../Services/Contexts/DatabaseContext';
 import {
   getAuth,
   createUserWithEmailAndPassword,
