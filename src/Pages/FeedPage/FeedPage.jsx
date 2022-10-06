@@ -256,7 +256,7 @@ const FeedPage = () => {
             model={model}></ListOfChannels>
         </Col>
         <Col sm={12} md={8} lg={6} xl={6} xxl={8} style={{ height: '100%' }}>
-          <MainColumn className='mainColumn' model={model} setModel={setModel} params={params} refreshLocalDB={refreshLocalDB}></MainColumn>
+          <MainColumn className='mainColumn' model={model} refreshLocalDB={refreshLocalDB}></MainColumn>
         </Col>
         <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block backGroundColorSideColumnBlack'>
           <AccountSection 

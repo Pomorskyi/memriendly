@@ -1,12 +1,14 @@
 import React from 'react'
 import { Button, Container, Row, Col } from 'react-bootstrap';
+import { MyAccount } from 'src/Components/componentsForComponents';
 import './style.css';
 
-const AccountSection = ({ handleShowSettings, handleShowCreateChannel, subscribeToCurrentChannel, unSubscribeToCurrentChannel }) => {
+const AccountSection = ({ model, handleShowSettings, handleShowCreateChannel, subscribeToCurrentChannel, unSubscribeToCurrentChannel }) => {
 
   return (
     <div className='AccountSectionContainer'>
       <Container>
+        <MyAccount model={model}/>
         <Row>
           <Col>
             <Button variant="primary customOperationalButton" onClick={handleShowSettings}>
