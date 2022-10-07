@@ -10,7 +10,7 @@ const CurrentChannelAbout  = ({ model }) => {
     setIsShown(!_.isNil(model.currentChannel))
   }, [model.currentChannel])
 
-  const rowStyles = useMemo(() => {
+  const rowClasses = useMemo(() => {
     if(isShown){
       return ['']
     } else {
@@ -29,7 +29,7 @@ const CurrentChannelAbout  = ({ model }) => {
 
   if(isShown){
     return (
-     <Row id='currentChannelAboutLogoBigRow'>
+     <Row id='currentChannelAboutLogoBigRow' className={rowClasses} >
        <Col>
          {image}
        </Col>
