@@ -23,7 +23,7 @@ const CurrentChannelAbout  = ({ model }) => {
     // const url = _.isNil(model.currentChannel) ? '/images/noavatar.png' : model.currentChannel.photoUrl // TODO
     const url = '/images/noavatar.png'
     if(model.currentChannel) {
-      return <img src={url} className='avatar w-100 m-1' alt='bigAvatar' />
+      return <img src={url} className='avatar w-100' alt='bigAvatar' />
     }
   }, [model.currentChannel]);
 

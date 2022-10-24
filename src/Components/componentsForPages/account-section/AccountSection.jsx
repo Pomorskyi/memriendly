@@ -23,20 +23,24 @@ const AccountSection = ({ model, handleShowSettings, handleShowCreateChannel, su
             </Button>
           </Col>
         </Row>
-        <Row className='mt-2'>
-          <Col>
-            <Button variant="primary customOperationalButton" onClick={subscribeToCurrentChannel}>
-              Subscribe to current channel
-            </Button>
-          </Col>
-        </Row>
-        <Row className='mt-2'>
-          <Col>
-            <Button variant="primary customOperationalButton" onClick={unSubscribeToCurrentChannel}>
-              Unsubscribe to current channel
-            </Button>
-          </Col>
-        </Row>
+        {model.currentChannel &&
+          <React.Fragment>
+            <Row className='mt-2'>
+              <Col>
+                <Button variant="primary customOperationalButton" onClick={subscribeToCurrentChannel}>
+                  Subscribe to current channel
+                </Button>
+              </Col>
+            </Row>
+            <Row className='mt-2'>
+              <Col>
+                <Button variant="primary customOperationalButton" onClick={unSubscribeToCurrentChannel}>
+                  Unsubscribe to current channel
+                </Button>
+              </Col>
+            </Row>
+          </React.Fragment>
+        }
       </Container>
     </div>
   )

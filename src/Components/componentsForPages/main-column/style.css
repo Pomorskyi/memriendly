@@ -8,9 +8,14 @@
 }
 .messagesArea{
     min-width: 100%;
-    min-height: 89%;
+    /* min-height: 89%; */
 }
 .inputMessageForm{
+    margin-bottom: .5rem;
+    color: var(--font-primary);
+    background-color: var(--bg-color-secondary);
+    border: 1px solid var(--bg-color-small-elements);
+    border-radius: .4rem;
     flex-direction: row;
     display: flex;
     min-height: fit-content;
@@ -20,7 +25,7 @@
 }
 
 .messageTextArea{
-    width: 90%;
+    width: 95%;
     height: 100%;
 }
 
@@ -29,12 +34,15 @@
 }
 
 .messageTextAreaTA{
+    background-color: inherit;
+    color: inherit;
+    line-height: 24px;
     display: block;
     min-width: 100%;
     resize: none;
     border: none;
     margin: 0;
-    padding: 0;
+    padding: .2rem .8rem;
     height: 100%;
 }
 
@@ -51,8 +59,19 @@
 }
 
 .messageSendButton{
-    width: 12%;
+    border-radius: 0 .2em .2em 0;
+    background-color: var(--bg-color-small-elements);
+    color: inherit;
+    transition: 0;
+    width: 6%;
     border: none;
+}
+.messageSendButton > img{
+    max-width: 60%;
+    height: auto;
+}
+.messageSendButton:hover{
+    background-color: var(--bg-hover-small-elements);
 }
 .message{
     max-width: 100%;
@@ -78,12 +97,17 @@
     word-wrap: break-word;
     word-break: break-all; 
 }
+.messageText > p{
+    white-space: pre-line;
+}
 
 .messageDataAlignRight{
+    color: var(--font-secondary);
     text-align: right;
 }
 
 .messageDataAlignLeft{
+    color: var(--font-secondary);
     text-align: left; 
 }
 

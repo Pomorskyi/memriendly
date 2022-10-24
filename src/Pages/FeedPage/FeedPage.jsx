@@ -65,10 +65,16 @@ const FeedPage = () => {
   function getSubscribedChannels(modelObj) {
     if(!_.isNil(modelObj.currentUser)){
       var displayedChannels = {}
-      if(modelObj.users[modelObj.currentUser.uid].listOfSubscribedChannels){
-        modelObj.users[modelObj.currentUser.uid].listOfSubscribedChannels.forEach(el => {
-          displayedChannels[el] = modelObj.channels[el]
-        })
+      if(modelObj.channels){
+        Object.keys(modelObj.channels)
+          .filter((channelId) => {
+            if(modelObj.channels[channelId].subscribers){
+              return modelObj.channels[channelId].subscribers.includes(modelObj.currentUser.uid)
+            } else return false
+          })
+          .forEach(el => {
+            displayedChannels[el] = modelObj.channels[el]
+          })
       }
       return displayedChannels
     }
@@ -100,7 +106,6 @@ const FeedPage = () => {
         if(name === 'users'){
           updateTable('users').then((res) => {
             newModel.users = res;
-            setSubscribedChannels(getSubscribedChannels(newModel))
           })
         } else if(name === 'channels'){
           updateTable('channels').then((res) => {
@@ -109,6 +114,7 @@ const FeedPage = () => {
         }
         resolve2(newModel)
       }).then((newModel) => {
+        setSubscribedChannels(getSubscribedChannels(newModel))
         setModel(newModel);
         resolve1();
       })
@@ -130,8 +136,7 @@ const FeedPage = () => {
       }
 
       if(_.isNil(model.channels[params.channelId]) 
-          || _.isNil(model.channels[params.channelId].subscribers)
-          || _.isNil(model.users[model.currentUser.uid].listOfSubscribedChannels)){
+          || _.isNil(model.channels[params.channelId].subscribers)){
         setLoading(false);
         console.log('u r not suscribed to cur channel')
         return null
@@ -147,17 +152,6 @@ const FeedPage = () => {
         ), 1);
       
         writeChannelObj(params.channelId, newChannel)
-      }
-
-      if (!_.isNil(model.users[model.currentUser.uid].listOfSubscribedChannels) && 
-          model.users[model.currentUser.uid].listOfSubscribedChannels.includes(params.channelId)){
-        const newUser = _.clone(model.users[model.currentUser.uid]);
-
-        newUser.listOfSubscribedChannels.splice(newUser.listOfSubscribedChannels.findIndex(el => 
-          el === params.channelId
-        ), 1);
-
-        writeUserObj(model.currentUser.uid, newUser)
       }
 
       Promise.all([refreshLocalDB('channels'), refreshLocalDB('users')]).then(() => {
@@ -192,18 +186,6 @@ const FeedPage = () => {
           promises.push(writeChannelObj(model.currentChannel.channelId, newChannel))
         }
   
-        if (_.isNil(model.users[model.currentUser.uid].listOfSubscribedChannels) || 
-          !model.users[model.currentUser.uid].listOfSubscribedChannels.includes(model.currentChannel.channelId)){
-          const newUser = _.clone(model.users[model.currentUser.uid]);
-          if(newUser.listOfSubscribedChannels) {
-            newUser.listOfSubscribedChannels.push(model.currentChannel.channelId)
-          } else {
-            newUser.listOfSubscribedChannels = [model.currentChannel.channelId]
-          }
-  
-          promises.push(writeUserObj(model.currentUser.uid, newUser))
-        }
-
         Promise.all(promises).then(() => {
           innerResolve()
         })
@@ -231,6 +213,10 @@ const FeedPage = () => {
      }
   }
 
+  useEffect(() => {
+    console.log(model)
+  }, [])
+
   return (
     <Container className='FeedPageContainer h-100 d-flex flex-column backGroundColorBlack' fluid>
       <LoadingSpinner show={loading || _.isNil(model)} />
@@ -252,7 +238,7 @@ const FeedPage = () => {
           <ListOfChannels
             className='listOfChannels'
             allChannels={model.channels}
-            listOfSubscribedChannels={subscribedChannels}
+            subscribedChannels={subscribedChannels}
             model={model}></ListOfChannels>
         </Col>
         <Col sm={12} md={8} lg={6} xl={6} xxl={8} style={{ height: '100%' }}>

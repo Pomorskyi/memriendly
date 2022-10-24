@@ -23,7 +23,6 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
 
     createChannel(currentUser, nameRef.current.value, discriptionRef.current.value, logoPreview)
       .then((idOfChannel) => {
-        console.log('refresh')
         refreshLocalDB('channels').then(() => {
           setShowCreateChannel(false)
           subscribeToCurrentChannel().then(() => {
@@ -34,7 +33,10 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
         setError(error)
         setTimeout(() => {setError('')}, 5000)
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false)
+        console.log(model)
+      });
   }
 
   const handleLogoChange = (e) => {

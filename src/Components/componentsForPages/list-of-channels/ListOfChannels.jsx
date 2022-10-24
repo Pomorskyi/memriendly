@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react'
 import { Link } from "react-router-dom";
 import './style.css';
 
-const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
+const ListOfChannels = ({ subscribedChannels, allChannels, model }) => {
   const [currentInput, setCurrentInput] = useState('')
   const [showSearching, setShowSearching] = useState(false)
 
@@ -17,8 +17,12 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
   }, [allChannels, currentInput])
 
   const renderedListOfSubscribedChannels = useCallback(() => {
-    return getListOfElements(listOfSubscribedChannels)
-  }, [listOfSubscribedChannels])
+    if(Object.keys(subscribedChannels).length > 0){
+      return getListOfElements(subscribedChannels)
+    } else {
+      return <div className='noSubscribedChannels'><p>you have no subscribed channels</p></div>
+    }
+  }, [subscribedChannels])
 
   function getListOfElements(list, serachingValue = '', showSubscribing = false, showFollowers = false) {
     const res = []
@@ -33,13 +37,11 @@ const ListOfChannels = ({ listOfSubscribedChannels, allChannels, model }) => {
       objKeys = Object.keys(list)
     }
 
-    console.log(model)
-    console.log(list)
-
     function getSubscribedLabel (el) {
       var res = ''
-      const isSubscribed = showSubscribing && model.users[model.currentUser.uid].listOfSubscribedChannels &&
-        model.users[model.currentUser.uid].listOfSubscribedChannels.includes(el)
+      console.log(model)
+      const isSubscribed = showSubscribing && model.channels[el].subscribers &&
+        model.channels[el].subscribers.includes(model.currentUser.uid)
       const numOfSubscribers = model.channels[el].subscribers ? model.channels[el].subscribers.length : 0
 
       if(isSubscribed){
