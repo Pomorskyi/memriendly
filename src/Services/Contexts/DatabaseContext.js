@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { database } from './firebase';
 import { sha256 } from 'js-sha256';
 import _ from 'lodash';
+import { useNavigate  } from 'react-router-dom'
 import { ref, set, child, get } from "firebase/database";
 
 const DatabaseContext = React.createContext()
@@ -15,6 +16,7 @@ export function DatabaseProvider({ children }) {
   const [users, setUsers] = useState([])
   const [channels, setChannels] = useState([])
   const [loading, setLoading] = useState(false);
+  const navigate  = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,11 +52,11 @@ export function DatabaseProvider({ children }) {
   // name = { users, channels }
   async function getAllTable(name) {
     return await get(child(dbRef, name))
-      .then((snapshot) => {
-        return snapshot.exists() ? snapshot.val() : []
-      }).catch((error) => {
-        console.error(error);
-      });
+    .then((snapshot) => {
+      return snapshot.exists() ? snapshot.val() : []
+    }).catch((error) => {
+      navigate("/signup")
+    });
   }
 
   function write(tableName, id, data) {
@@ -123,13 +125,13 @@ export function DatabaseProvider({ children }) {
   function writeUser(userId, email) {
     return new Promise((resolve, reject) => {
       updateTable('users').then(() => {
-        const hasDuplicates = Object.keys(users).forEach(key => users[key].email === email)
+        console.log(users)
+        const hasDuplicates = users ? Object.keys(users).forEach(key => users[key].email === email) : false
 
-        if(hasDuplicates === undefined){
+        if(!hasDuplicates){
           write('users', userId, {
             email: email,
             listofOwnChanels: [],
-            listOfSubscribedChannels: [],
             nickname: userId
           }).then(() => resolve('success'))
         } else {

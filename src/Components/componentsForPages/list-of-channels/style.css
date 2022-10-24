@@ -77,3 +77,10 @@
     display: block;
     font-size: .8rem;
 }
+
+.noSubscribedChannels{
+    color: var(--font-secondary);
+    width: 100%;
+    text-align: center;
+    margin-top: 25rem;
+}

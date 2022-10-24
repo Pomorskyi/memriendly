@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { Container, Row, Col, Form} from 'react-bootstrap'
 import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 import _ from 'lodash';
@@ -6,7 +6,14 @@ import './style.css';
 
 const MainColumn = ({ model, refreshLocalDB }) => {
   const [message, setMessage] = useState('')
+  const [howBigArea, setHowBigArea] = useState(0)
   const { writeMessage } = useDatabase()
+
+  useEffect(() => {
+    var ta = document.getElementById('messageTextArea');
+    var numberOfRows = ta.innerHTML.split('\n').length
+    setHowBigArea(numberOfRows > 2 ? (numberOfRows < 6 ? numberOfRows : 6) : 2)
+  }, [message])
 
   function getUserNickname(uid){
     if(_.isNil(model.users[uid])){
@@ -48,7 +55,7 @@ const MainColumn = ({ model, refreshLocalDB }) => {
               />
               <div className='messageText'>
                 <h6 className='ownerOfMessage'>{getUserNickname(obj.owner)}</h6>
-                {obj.message}
+                <p>{obj.message}</p>
               </div>
             </div>
             <div className={dataStyles}>
@@ -71,28 +78,31 @@ const MainColumn = ({ model, refreshLocalDB }) => {
 
   function handleSubmit(e){
     e.preventDefault()
-    writeMessage(model.currentChannel.channelId, model.currentUser.uid, message)
-      .then(() => {
-        refreshLocalDB('channels');
-        setMessage('')
-      })
+    if(message.length > 0 && model.currentChannel){
+      writeMessage(model.currentChannel.channelId, model.currentUser.uid, message)
+        .then(() => {
+          refreshLocalDB('channels');
+          setMessage('')
+        })
+    }
   }
 
   //TODO: if(JSON.stringify(model.currentChannel) === null) show 'No chosen Channel'
   return (
-    <div className='MainColumnMain scrollbarstyle backGroundColorBlack'>
+    <div id='messageScrollbarHolder' className='MainColumnMain scrollbarstyle backGroundColorBlack'>
       <Form onSubmit={handleSubmit} className='inputMessageForm'>
         <Form.Group id="message" className="messageTextArea">
           <textarea
             name="message"
             id="messageTextArea"
             wrap='hard'
+            rows={howBigArea}
             value={message}
             className="messageTextAreaTA scrollbarstyle"
             onChange={handleMessageChange}/>
         </Form.Group>
         <button type="submit" className="messageSendButton">
-            Send
+            <img src="/images/send.png" alt="send" />
         </button>
       </Form>
       <Container className='scrollbarstyle messageContainer messagesArea mb-4'>

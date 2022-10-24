@@ -2,15 +2,15 @@
   --bg-color-primary: rgb(187, 196, 240);
   --bg-color-secondary: rgb(174, 185, 246);
   --bg-color-header-footer: rgb(133, 147, 231);
-  --bg-color-small-elements: rgb(145, 157, 215);
+  --bg-color-small-elements: rgb(150, 164, 241);
   --bg-hover-small-elements: rgb(108, 120, 199);
-  --bg-operational-btn: #fdafda;
+  --bg-operational-btn: #e7affd;
   --bg-modal: #ffffff;
   
   --slider: #000000;
   --slider-bg: #bfc4f3;
 
-  --font-primary: rgb(66, 66, 66);
+  --font-primary: rgb(41, 41, 41);
   --font-secondary: rgb(71, 71, 71);
 
   /* loading */

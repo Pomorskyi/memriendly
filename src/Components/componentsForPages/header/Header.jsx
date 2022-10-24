@@ -8,8 +8,8 @@ import './style.css';
 const Header = ({ model, handleLogout }) => {
 
   const unsubscribeLabel = useMemo(() => {
-    if(model.currentChannel && model.currentUser && model.users[model.currentUser.uid].listOfSubscribedChannels){
-      if(!model.users[model.currentUser.uid].listOfSubscribedChannels.includes(model.currentChannel.channelId)){
+    if(model.currentChannel && model.currentUser && model.channels[model.currentChannel.channelId].subscribers){
+      if(!model.channels[model.currentChannel.channelId].subscribers.includes(model.currentUser.uid)){
         return <h6 className='unsubscribedLabel m-3'>Unsubscribed</h6>
       }
     }
