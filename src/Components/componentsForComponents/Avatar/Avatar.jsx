@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Row, Col, Form, Button, Alert } from 'react-bootstrap'
 import { useAuth } from '../../../Services/Contexts/AuthContext'
+import constants from 'src/Services/constants/constants';
 import _ from 'lodash'
 import './style.css';
 
@@ -8,23 +9,40 @@ const Avatar = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [info, setInfo] = useState(false)
-  const [avatarUrl, setAvatarUrl] = useState('')
-  const { currentUser, updateProfile } = useAuth()
+  const [avatarUrl, setAvatarUrl] = useState(constants.NO_PHOTO_CHOOSEN_PATH)
+  const [avatarUrlLink, setAvatarUrlLink] = useState('')
+  const { currentUser, updateProfileCustom } = useAuth()
   
   async function handleSubmit(e) {
     e.preventDefault()
     setLoading(true)
 
-    await updateProfile({ photoURL: "https://example.com/jane-q-user/profile.jpg" })
+    new Promise((resolve, reject) => {
+      if(avatarUrl !== '/images/noavatar.png'){
+        updateProfileCustom({ photoURL: "" })
+      }
+      if(avatarUrlLink){
+        updateProfileCustom({ photoURL: avatarUrlLink })
+      }
+      resolve('sucess')
+    }).then((result) => {
+      setAvatarUrl(avatarUrlLink)
+    }, (error) => {
+      console.log(error)
+    }).finally(() => {
+      setLoading(false)
+    })
   }
 
-  function handleAvatarChange(event){
-    setAvatarUrl(event.target.value)
+  function handleAvatarUrlLinkChange(event){
+    setAvatarUrlLink(event.target.value)
   } 
 
   useEffect(() => {
     setLoading(true)
-    setAvatarUrl(_.isNil(currentUser.photoURL) ? '/images/noavatar.png' : currentUser.photoURL)
+    if(currentUser.photoURL){
+      setAvatarUrl(currentUser.photoURL)
+    }
     setLoading(false)
   }, [])
 
@@ -40,12 +58,9 @@ const Avatar = () => {
         <Form onSubmit={handleSubmit}>
           <Form.Group id="avatar">
               <Form.Label>Choose avatar</Form.Label>
-              <Form.Control type="file" className="form-control-sm" onChange={handleAvatarChange} required id="formFileSm" />
+              <Form.Control className='mt-3' type="text" placeholder="Input url" aria-label="avatar url" onChange={handleAvatarUrlLinkChange} required/>
           </Form.Group>
-          {/* <Button disabled={loading} className="w-100 mt-4" type="submit">
-              Update avatar
-          </Button> */}
-          <Button disabled={true} className="w-100 mt-4" type="submit">
+          <Button disabled={loading} className="w-100 mt-4" type="submit">
               Update avatar
           </Button>
         </Form>

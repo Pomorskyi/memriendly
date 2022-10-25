@@ -2,5 +2,8 @@
     border-radius: 50%;
     height: 100%;
     width: 100%;
-    padding-bottom: 1rem;
+}
+
+.channelDescription{
+    color: var(--font-secondary);
 }
