@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate  } from 'react-router-dom'
 import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap'
 import { useAuth } from '../../../Services/Contexts/AuthContext';
@@ -8,8 +8,8 @@ import './style.css';
 
 const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, refreshLocalDB, subscribeToCurrentChannel }) => {
   const [loading, setLoading] = useState(false)
-  const [logoPreview, setLogoPreview] = useState(constants.NO_PHOTO_CHOOSEN_PATH)
   const [error, setError] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState(constants.NO_PHOTO_CHOOSEN_PATH)
   const [info, setInfo] = useState(false)
   const { currentUser } = useAuth()
   const { createChannel } = useDatabase()
@@ -17,11 +17,20 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
   const discriptionRef = useRef()
   const navigate  = useNavigate()
 
+  useEffect(() => {
+    setLoading(true)
+    if(model.currentChannel && model.currentChannel.photoUrl && model.currentChannel.photoUrl !== constants.NO_PHOTO_CHOOSEN_PATH){
+      setAvatarUrl(model.currentChannel.photoUrl)
+    }
+    setLoading(false)
+  }, [])
+
+
   function handleSubmit(e){
     e.preventDefault()
     setLoading(true);
 
-    createChannel(currentUser, nameRef.current.value, discriptionRef.current.value, logoPreview)
+    createChannel(currentUser, nameRef.current.value, discriptionRef.current.value, avatarUrl)
       .then((idOfChannel) => {
         refreshLocalDB('channels').then(() => {
           setShowCreateChannel(false)
@@ -39,12 +48,8 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
       });
   }
 
-  const handleLogoChange = (e) => {
-    e.preventDefault()
-    
-    var url = window.URL.createObjectURL(e.target.value,);
-
-    setLogoPreview(url)
+  function handleAvatarUrlLinkChange(event) {
+    setAvatarUrl(event.target.value)
   }
 
   return (
@@ -62,11 +67,11 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
                   <h2>Logo</h2>
                   <Row>
                     <Col sm={6}>
-                      <img src={logoPreview} className='avatar w-100 m-1 p-2' alt='logo' />
+                      <img src={avatarUrl} className='avatar w-100 m-1 p-2' alt='logo' />
                     </Col>
                     <Col sm={6}>
                       <Form.Group id="logo">
-                        <Form.Control type="file" className="form-control-sm" onChange={handleLogoChange} id="formFileSm" />
+                        <Form.Control className='mt-3' type="text" placeholder="Input url" aria-label="avatar url" onChange={handleAvatarUrlLinkChange} required/>
                       </Form.Group>
                     </Col>
                   </Row>

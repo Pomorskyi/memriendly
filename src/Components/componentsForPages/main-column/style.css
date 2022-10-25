@@ -81,10 +81,9 @@
     padding: .2rem;
     display: flex;
 }
-.messagAavatar{
-    height: 100%;
+.messageAvatar{
     max-height: 3rem;
-    max-width: auto;
+    width: auto;
 }
 .messageContainer{
     max-width: 100%;

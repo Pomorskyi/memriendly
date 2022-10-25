@@ -53,7 +53,10 @@ export function AuthProvider({ children }) {
 
   // ex. dataObj = {displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"}
   function updateProfileCustom(dataObj) {
-    return updateProfile(currentUser, dataObj);
+    return new Promise((resolve) => {
+      updateProfile(currentUser, dataObj)
+      resolve('success')
+    })
   }
 
   useEffect(() => {

@@ -47,11 +47,10 @@ const MainColumn = ({ model, refreshLocalDB }) => {
           { isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}
           <Col sm={12} md={10} lg={9} xl={9} xxl={9} className={messageStyles}>
             <div className='message listElementBGColor'>
-              <img className='messagAavatar avatar' alt='avatar' src={ 
+              <img className='messageAvatar avatar' alt='avatar' src={ 
                 (model && 
-                model.currentChannel && 
-                model.currentChannel.photoUrl &&
-                model.currentChannel.photoUrl.length > 0) ? model.currentChannel.photoUrl : '/images/noavatar.png'}
+                model.currentUser && 
+                model.currentUser.photoURL) ? model.currentUser.photoURL : '/images/noavatar.png'}
               />
               <div className='messageText'>
                 <h6 className='ownerOfMessage'>{getUserNickname(obj.owner)}</h6>
@@ -59,7 +58,7 @@ const MainColumn = ({ model, refreshLocalDB }) => {
               </div>
             </div>
             <div className={dataStyles}>
-              {new Date(obj.datatime).toLocaleDateString('en-US', options)}
+              {new Date(obj.datatime).toLocaleDateString('en-US', options) + ', ' + new Date(obj.datatime).getHours() + ':' + new Date(obj.datatime).getMinutes()}
             </div>
           </Col>
           { !isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}

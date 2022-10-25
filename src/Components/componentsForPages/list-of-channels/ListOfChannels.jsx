@@ -61,7 +61,7 @@ const ListOfChannels = ({ subscribedChannels, allChannels, model }) => {
             to={'/channel/' + el}
           >
             <div className="listElementLinkContainer">
-              <img className='avatar' alt='avatar' src={
+              <img className='p-2 avatar' alt='avatar' src={
                 list[el].photoUrl.length > 0 ? list[el].photoUrl : '/images/noavatar.png'}
               />
               <h6 className='listElementLinkText ml-2'>{list[el].name}</h6>
