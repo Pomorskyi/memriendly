@@ -51,14 +51,6 @@ export function AuthProvider({ children }) {
     return updatePassword(currentUser, password);
   }
 
-  // ex. dataObj = {displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"}
-  function updateProfileCustom(dataObj) {
-    return new Promise((resolve) => {
-      updateProfile(currentUser, dataObj)
-      resolve('success')
-    })
-  }
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), user => {
       setCurrentUser(user)
@@ -75,8 +67,7 @@ export function AuthProvider({ children }) {
     logout,
     resetPassword,
     updateEmailCustom,
-    updatePasswordCustom,
-    updateProfileCustom
+    updatePasswordCustom
   }
 
   return (

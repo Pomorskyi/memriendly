@@ -4,29 +4,40 @@ import { useAuth } from '../../../Services/Contexts/AuthContext'
 import constants from 'src/Services/constants/constants';
 import _ from 'lodash'
 import './style.css';
+import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 
-const Avatar = () => {
+const Avatar = ({ model, refreshLocalDB }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [info, setInfo] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(constants.NO_PHOTO_CHOOSEN_PATH)
-  const [avatarUrlLink, setAvatarUrlLink] = useState('')
-  const { currentUser, updateProfileCustom } = useAuth()
+  const { currentUser } = useAuth()
+  const { writeUserObj } = useDatabase()
   
   async function handleSubmit(e) {
     e.preventDefault()
     setLoading(true)
 
     new Promise((resolve, reject) => {
+      console.log(avatarUrl)
       if(avatarUrl !== '/images/noavatar.png'){
-        updateProfileCustom({ photoURL: "" })
+        const userObj = {
+          ...model.users[model.currentUser.uid],
+          photoURL: avatarUrl
+        }
+        console.log(userObj)
+        writeUserObj(model.currentUser.uid, userObj)
+          .then(() => {
+            refreshLocalDB('users');
+            resolve('success');
+          })
       }
-      if(avatarUrlLink){
-        updateProfileCustom({ photoURL: avatarUrlLink })
-      }
-      resolve('sucess')
     }).then((result) => {
-      setAvatarUrl(avatarUrlLink)
+      // setAvatarUrl(avatarUrl)
+      setInfo('Avatar updated successfuly')
+      setTimeout(() => {
+        setInfo(false);
+      }, 5000)
     }, (error) => {
       console.log(error)
     }).finally(() => {
@@ -34,14 +45,21 @@ const Avatar = () => {
     })
   }
 
-  function handleAvatarUrlLinkChange(event){
-    setAvatarUrlLink(event.target.value)
+  function handleAvatarUrlChange(event){
+    function checkURL(url) {
+      return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+  }
+    setAvatarUrl(
+      event.target.value &&
+      event.target.value.match(/\.(jpeg|jpg|gif|png)$/) != null
+        ? event.target.value :
+        constants.NO_PHOTO_CHOOSEN_PATH);
   } 
 
   useEffect(() => {
     setLoading(true)
-    if(currentUser.photoURL){
-      setAvatarUrl(currentUser.photoURL)
+    if(model.users[currentUser.uid].photoURL){
+      setAvatarUrl(model.users[currentUser.uid].photoURL)
     }
     setLoading(false)
   }, [])
@@ -58,7 +76,7 @@ const Avatar = () => {
         <Form onSubmit={handleSubmit}>
           <Form.Group id="avatar">
               <Form.Label>Choose avatar</Form.Label>
-              <Form.Control className='mt-3' type="text" placeholder="Input url" aria-label="avatar url" onChange={handleAvatarUrlLinkChange} required/>
+              <Form.Control className='mt-3' type="text" placeholder="Input url" aria-label="avatar url" onChange={handleAvatarUrlChange} required/>
           </Form.Group>
           <Button disabled={loading} className="w-100 mt-4" type="submit">
               Update avatar

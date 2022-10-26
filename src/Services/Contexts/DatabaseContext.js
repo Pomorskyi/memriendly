@@ -92,6 +92,40 @@ export function DatabaseProvider({ children }) {
     })
   }
 
+  function updateChannel(channelId, name = '', description = '', photoUrl = '') {
+    return new Promise((resolve, reject) => {
+      updateTable('channels').then(() => {
+          var objectCopy = _.cloneDeep(channels[channelId])
+          if(description.length > 0){
+            objectCopy = {
+              ...objectCopy,
+              description: description
+            }
+          }
+          if(photoUrl.length > 0){
+            objectCopy = {
+              ...objectCopy,
+              photoUrl: photoUrl
+            }
+          }
+          if(name.length > 0){
+            objectCopy = {
+              ...objectCopy,
+              name: name
+            }
+          }
+          const hasDuplicates = Object.keys(channels).find(key => channels[key].name === name)
+          if(!_.isNil(hasDuplicates)){
+            reject('This name of channel is unavailable')
+            return 
+          }
+
+          write('channels', channelId, objectCopy)
+            .then(() => resolve())
+    })
+  })
+}
+
   function writeChannelObj(id, obj) {
     return new Promise((resolve) => {
       write('channels', id, obj).then(() => {
@@ -150,10 +184,21 @@ export function DatabaseProvider({ children }) {
   }
 
   function updateNickname(userId, nickname) {
-    write('users', userId, {
-      email: users[userId].email,
-      listofOwnChanels: users[userId].listofOwnChanels,
-      nickname: nickname
+    return new Promise((resolve, reject) => {
+      if(nickname.length > 2) {
+        var newObj = _.cloneDeep(users[userId])
+    
+        newObj = {
+          ...newObj,
+          nickname: nickname
+        }
+  
+        write('users', userId, newObj).then(() => {
+          resolve()
+        })
+      } else {
+        reject('Need to be more than 3 letters in nickname')
+      }
     })
   }
 
@@ -163,6 +208,7 @@ export function DatabaseProvider({ children }) {
     writeUser,
     writeUserObj,
     createChannel,
+    updateChannel,
     writeChannelObj,
     writeMessage,
     updateNickname,

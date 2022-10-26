@@ -11,7 +11,8 @@
   --slider-bg: #bfc4f3;
 
   --font-primary: rgb(41, 41, 41);
-  --font-secondary: rgb(71, 71, 71);
+  --font-secondary: rgb(83, 83, 83);
+  --font-success: rgb(40, 148, 58);
 
   /* loading */
   --loading-background: rgba(179, 179, 179, 0.712);
@@ -39,6 +40,7 @@
 
   --font-primary: rgb(236, 236, 236);
   --font-secondary: rgb(149, 149, 149);
+  --font-success: rgb(65, 163, 95);
 
   /* loading */
   --loading-background: rgba(69, 69, 69, 0.712);
