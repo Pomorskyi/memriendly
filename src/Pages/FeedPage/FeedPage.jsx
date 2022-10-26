@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import MyAccountModal from '../../Components/Modals/MyAccountModal/MyAccountModal';
 import CreateChannelModal from 'src/Components/Modals/CreateChannelModal/CreateChannelModal';
 import LoadingSpinner from 'src/Components/componentsForPages/loadingSpinner/LoadingSpinner';
+import ChannelSettingsModal from 'src/Components/Modals/ChannelSettingsModal/ChannelSettingsModal';
 import _ from 'lodash';
 import './style.css'
 
@@ -27,6 +28,7 @@ const FeedPage = () => {
   let params = useParams();
   const navigate = useNavigate()
   const [showSettings, setShowSettings] = useState(false);
+  const [showChannelSettings, setShowChannelSettings] = useState(false);
   const [showCreateChannel, setShowCreateChannel] = useState(false);
 
   useEffect(() => {
@@ -76,6 +78,7 @@ const FeedPage = () => {
             displayedChannels[el] = modelObj.channels[el]
           })
       }
+      console.log(displayedChannels)
       return displayedChannels
     }
   }
@@ -106,14 +109,17 @@ const FeedPage = () => {
         if(name === 'users'){
           updateTable('users').then((res) => {
             newModel.users = res;
+            resolve2(newModel)
           })
         } else if(name === 'channels'){
           updateTable('channels').then((res) => {
+            console.log(res)
             newModel.channels = res
+            resolve2(newModel)
           })
         }
-        resolve2(newModel)
       }).then((newModel) => {
+        console.log(newModel)
         setSubscribedChannels(getSubscribedChannels(newModel))
         setModel(newModel);
         resolve1();
@@ -123,6 +129,10 @@ const FeedPage = () => {
 
   async function handleCloseSettings() {
     setShowSettings(false);
+  }
+
+  async function handleCloseChannelSettings() {
+    setShowChannelSettings(false);
   }
 
   async function handleCloseCreateChannel() {
@@ -200,6 +210,8 @@ const FeedPage = () => {
 
   const handleShowSettings = () => setShowSettings(true);
 
+  const handleShowChannelSettings = () => setShowChannelSettings(true);
+
   const handleShowCreateChannel = () => setShowCreateChannel(true);
 
   async function handleLogoutProp() {
@@ -213,6 +225,14 @@ const FeedPage = () => {
      }
   }
 
+  function setCurrentUserInUsers(userObj) {
+    setLoading(true);
+    var modelCopy = _.cloneDeep(model)
+    modelCopy.users[currentUser.uid] = userObj
+    setModel(modelCopy);
+    setLoading(false);
+  }
+
   useEffect(() => {
     console.log(model)
   }, [])
@@ -220,7 +240,17 @@ const FeedPage = () => {
   return (
     <Container className='FeedPageContainer h-100 d-flex flex-column backGroundColorBlack' fluid>
       <LoadingSpinner show={loading || _.isNil(model)} />
-      <MyAccountModal handleClose={handleCloseSettings} model={model} show={showSettings} />
+      <MyAccountModal
+        handleClose={handleCloseSettings}
+        model={model}
+        show={showSettings}
+        refreshLocalDB={refreshLocalDB}/>
+      <ChannelSettingsModal
+        handleClose={handleCloseChannelSettings}
+        model={model}
+        show={showChannelSettings}
+        setShowChannelSettings={setShowChannelSettings}
+        refreshLocalDB={refreshLocalDB}/>
       <CreateChannelModal
         handleClose={handleCloseCreateChannel}
         setShowCreateChannel={setShowCreateChannel}
@@ -246,7 +276,8 @@ const FeedPage = () => {
         </Col>
         <Col sm={0} md={4} lg={3} xl={3} xxl={2} className='d-none d-md-block backGroundColorSideColumnBlack'>
           <AccountSection 
-            handleShowSettings={handleShowSettings} 
+            handleShowSettings={handleShowSettings}
+            handleShowChannelSettings={handleShowChannelSettings} 
             handleShowCreateChannel={handleShowCreateChannel}
             subscribeToCurrentChannel={subscribeToCurrentChannel}
             unSubscribeToCurrentChannel={unSubscribeToCurrentChannel}

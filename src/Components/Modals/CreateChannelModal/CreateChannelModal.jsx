@@ -71,7 +71,7 @@ const CreateChannelModal = ({ handleClose, show, model, setShowCreateChannel, re
                     </Col>
                     <Col sm={6}>
                       <Form.Group id="logo">
-                        <Form.Control className='mt-3' type="text" placeholder="Input url" aria-label="avatar url" onChange={handleAvatarUrlLinkChange} required/>
+                        <Form.Control type="text" placeholder="Input url" aria-label="avatar url" onChange={handleAvatarUrlLinkChange}/>
                       </Form.Group>
                     </Col>
                   </Row>

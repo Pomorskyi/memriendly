@@ -7,3 +7,34 @@
 .channelDescription{
     color: var(--font-secondary);
 }
+
+.channelName{
+    text-align: center;
+}
+
+.admin{
+    width: 100%;
+    height: 3rem;
+    background-color: var(--bg-color-small-elements);
+    border-radius: .5rem;
+    display: flex;
+}
+
+.threeDotsInTheEnd{
+    display: inline-block;
+    /* width: 15rem; */
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.administratorNickname{
+    line-height: 3rem;
+    margin: 0;
+    margin-right: .3rem;
+}
+
+.itIsMineChannel{
+    margin-right: .3rem;
+    color: var(--font-success);
+}

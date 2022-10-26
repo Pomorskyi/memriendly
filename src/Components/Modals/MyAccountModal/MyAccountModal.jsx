@@ -5,7 +5,7 @@ import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 import { Avatar } from '../../componentsForComponents';
 import './style.css';
 
-const MyAccountModal = ({ handleClose, show }) => {
+const MyAccountModal = ({ handleClose, show, model, refreshLocalDB }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [info, setInfo] = useState(false)
@@ -39,15 +39,15 @@ const MyAccountModal = ({ handleClose, show }) => {
       promises.push(updatePasswordCustom(passwordRef.current.value))
     }
     if (nicknameRef.current.value){
-      console.log(currentUser)
-      promises.push(updateNickname(currentUser.uid, passwordRef.current.value))
+      promises.push(updateNickname(currentUser.uid, nicknameRef.current.value))
     }
 
     Promise.all(promises).then(() => {
+      refreshLocalDB('users');
       setInfo('Profile updated succesfully')
       setTimeout(() => {setInfo('')}, 5000)
     }).catch(() => {
-      setError('Failed to update account')
+      setError('Failed to update account. Try again later')
     }).finally(() => {
       setLoading(false)
     })
@@ -62,7 +62,7 @@ const MyAccountModal = ({ handleClose, show }) => {
           <Container fluid>
             <Row>
               <Col sm={12} lg={6}>
-                <Avatar currentUser={currentUser} />
+                <Avatar currentUser={currentUser} model={model} refreshLocalDB={refreshLocalDB} />
               </Col>
               <Col sm={12} lg={6}>
                 <h2>Profile</h2>

@@ -3,6 +3,7 @@ import { Container, Row, Col, Form} from 'react-bootstrap'
 import { useDatabase } from 'src/Services/Contexts/DatabaseContext';
 import _ from 'lodash';
 import './style.css';
+import constants from 'src/Services/constants/constants';
 
 const MainColumn = ({ model, refreshLocalDB }) => {
   const [message, setMessage] = useState('')
@@ -42,16 +43,14 @@ const MainColumn = ({ model, refreshLocalDB }) => {
       const messageStyles = ['messageOuterContainer', 
         isMine ? 'messageOuterContainerAlignRight' : 'messageOuterContainerAlignLeft']
 
+      const imgSrc = model.users[obj.owner].photoURL ? model.users[obj.owner].photoURL : constants.NO_PHOTO_CHOOSEN_PATH
+      
       result.push(
         <Row className='mt-2' key={model.currentChannel.channelId + 'mes' + ind}>
           { isMine && <Col sm={0} md={2} lg={3} xl={3} xxl={3} className='d-none d-md-block mr-1 ml-1'></Col>}
           <Col sm={12} md={10} lg={9} xl={9} xxl={9} className={messageStyles}>
             <div className='message listElementBGColor'>
-              <img className='messageAvatar avatar' alt='avatar' src={ 
-                (model && 
-                model.currentUser && 
-                model.currentUser.photoURL) ? model.currentUser.photoURL : '/images/noavatar.png'}
-              />
+              <img className='messageAvatar avatar' alt='avatar' src={imgSrc} />
               <div className='messageText'>
                 <h6 className='ownerOfMessage'>{getUserNickname(obj.owner)}</h6>
                 <p>{obj.message}</p>

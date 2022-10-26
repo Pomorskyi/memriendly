@@ -18,6 +18,7 @@ const ListOfChannels = ({ subscribedChannels, allChannels, model }) => {
 
   const renderedListOfSubscribedChannels = useCallback(() => {
     if(Object.keys(subscribedChannels).length > 0){
+      console.log(subscribedChannels)
       return getListOfElements(subscribedChannels)
     } else {
       return <div className='noSubscribedChannels'><p>you have no subscribed channels</p></div>
@@ -39,7 +40,6 @@ const ListOfChannels = ({ subscribedChannels, allChannels, model }) => {
 
     function getSubscribedLabel (el) {
       var res = ''
-      console.log(model)
       const isSubscribed = showSubscribing && model.channels[el].subscribers &&
         model.channels[el].subscribers.includes(model.currentUser.uid)
       const numOfSubscribers = model.channels[el].subscribers ? model.channels[el].subscribers.length : 0
@@ -51,6 +51,10 @@ const ListOfChannels = ({ subscribedChannels, allChannels, model }) => {
       }
 
       return res
+    }
+
+    function getDescription (el) {
+      return model.channels[el].description ? model.channels[el].description : ''
     }
 
     objKeys.map((el) => {
@@ -66,6 +70,7 @@ const ListOfChannels = ({ subscribedChannels, allChannels, model }) => {
               />
               <h6 className='listElementLinkText ml-2'>{list[el].name}</h6>
               <h6 className='subscribedLabel ml-2'>{getSubscribedLabel(el)}</h6>
+              <h6 className='subscribedLabel ml-2 descriptionInListOfChannels'>{getDescription(el)}</h6>
             </div>
           </Link>
         </li>
