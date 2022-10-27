@@ -4,7 +4,7 @@ import { MyAccount } from 'src/Components/componentsForComponents';
 import './style.css';
 
 const AccountSection = ({ model, handleShowSettings, handleShowCreateChannel, subscribeToCurrentChannel, unSubscribeToCurrentChannel, handleShowChannelSettings }) => {
-
+  
   const isMine = useMemo(() => {
     if(model.currentChannel){
       return model.currentChannel.owner === model.currentUser.uid

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Row, Col, Button } from 'react-bootstrap'
-import { ButtonList, ToggleButton } from '../../componentsForComponents';
+import { ToggleButton } from '../../componentsForComponents';
 import { Navigate } from 'react-router-dom';
 import "react-toggle/style.css"
 import './style.css';
@@ -37,7 +37,6 @@ const Header = ({ model, handleLogout }) => {
       </Col>
       <Col>
         <div className="hor-center ver-center channelTitle">{titleOfHeader} {unsubscribeLabel}</div>  
-        <ButtonList />
       </Col>
       <Col className="text-center">
         <div className="hor-center ver-center">

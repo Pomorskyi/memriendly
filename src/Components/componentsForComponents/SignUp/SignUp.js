@@ -87,7 +87,6 @@ function SignUp() {
 
   return (
     <>
-    {/*TODO: Change card for new styles from Telegram own messages */}
         <Card className="w-100 customSignUp">
             {isForgotPassword && 
                 <Card.Body>
