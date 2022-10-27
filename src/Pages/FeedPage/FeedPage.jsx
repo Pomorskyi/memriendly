@@ -11,10 +11,12 @@ import {
 import { useAuth } from '../../Services/Contexts/AuthContext';
 import { useDatabase } from '../../Services/Contexts/DatabaseContext';
 import { useParams } from "react-router-dom";
-import MyAccountModal from '../../Components/Modals/MyAccountModal/MyAccountModal';
-import CreateChannelModal from 'src/Components/Modals/CreateChannelModal/CreateChannelModal';
+import {
+  MyAccountModal,
+  CreateChannelModal,
+  ChannelSettingsModal
+} from '../../Components/Modals'
 import LoadingSpinner from 'src/Components/componentsForPages/loadingSpinner/LoadingSpinner';
-import ChannelSettingsModal from 'src/Components/Modals/ChannelSettingsModal/ChannelSettingsModal';
 import _ from 'lodash';
 import './style.css'
 
